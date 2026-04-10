@@ -83,37 +83,48 @@ export function ListingWizard() {
 
       if (insertError) throw insertError;
 
+      // Upload photos — continue even if individual uploads fail
+      // Why: don't block the listing from being created because of one photo issue
       const slotsWithFiles = photoSlots.filter(s => s.file !== null);
 
       for (const slot of slotsWithFiles) {
         if (!slot.file) continue;
 
-        const compressed = await compressImage(slot.file);
+        try {
+          const compressed = await compressImage(slot.file);
 
-        const filePath = `${listing.id}/${slot.slot}.webp`;
-        const { error: uploadError } = await supabase.storage
-          .from('car-photos')
-          .upload(filePath, compressed, {
-            contentType: 'image/webp',
-            upsert: true,
-          });
+          const filePath = `${listing.id}/${slot.slot}.webp`;
+          const { error: uploadError } = await supabase.storage
+            .from('car-photos')
+            .upload(filePath, compressed, {
+              contentType: 'image/webp',
+              upsert: true,
+            });
 
-        if (uploadError) throw uploadError;
+          if (uploadError) {
+            console.warn(`Photo upload failed for ${slot.slot}:`, uploadError.message);
+            continue;
+          }
 
-        const { data: { publicUrl } } = supabase.storage
-          .from('car-photos')
-          .getPublicUrl(filePath);
+          const { data: { publicUrl } } = supabase.storage
+            .from('car-photos')
+            .getPublicUrl(filePath);
 
-        const { error: photoError } = await supabase
-          .from('listing_photos')
-          .insert({
-            listing_id: listing.id,
-            slot: slot.slot,
-            url: publicUrl,
-            display_order: 0,
-          });
+          const { error: photoError } = await supabase
+            .from('listing_photos')
+            .insert({
+              listing_id: listing.id,
+              slot: slot.slot,
+              url: publicUrl,
+              display_order: 0,
+            });
 
-        if (photoError) throw photoError;
+          if (photoError) {
+            console.warn(`Photo record failed for ${slot.slot}:`, photoError.message);
+          }
+        } catch (photoErr) {
+          console.warn(`Photo processing failed for ${slot.slot}:`, photoErr);
+        }
       }
 
       router.push(`/listings/${listing.id}`);
