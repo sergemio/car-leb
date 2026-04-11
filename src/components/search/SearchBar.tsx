@@ -80,7 +80,7 @@ export function SearchBar({ onSearch, initialMake = '', initialModel = '' }: Sea
         />
         <button
           type="submit"
-          className="h-11 px-5 rounded-full bg-[var(--ink)] text-white font-mono text-[11px] font-bold uppercase tracking-[0.1em] hover:bg-white hover:text-[var(--ink)] border border-[var(--ink)] transition-colors shrink-0"
+          className="h-11 px-5 rounded-full bg-[var(--ink)] text-white font-mono text-[11px] font-bold uppercase tracking-[0.1em] hover:opacity-90 border border-[var(--ink)] transition-opacity shrink-0"
         >
           Search →
         </button>

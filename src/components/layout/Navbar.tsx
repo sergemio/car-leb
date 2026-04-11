@@ -99,7 +99,7 @@ export function Navbar() {
             <Link
               href="/sell"
               style={pillEasing}
-              className={`${pillBase} inline-flex items-center gap-2 px-5 h-11 rounded-full border border-[var(--ink)] bg-[var(--ink)] text-white text-sm font-medium hover:bg-white hover:text-[var(--ink)] ${
+              className={`${pillBase} inline-flex items-center gap-2 px-5 h-11 rounded-full border border-[var(--ink)] bg-[var(--ink)] text-white text-sm font-medium hover:opacity-90 ${
                 scrolled ? 'shadow-[0_10px_28px_-10px_rgba(10,10,10,0.4)]' : ''
               }`}
             >

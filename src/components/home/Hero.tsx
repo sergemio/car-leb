@@ -60,13 +60,13 @@ export function Hero({ totalListings }: HeroProps) {
         <div className="flex flex-wrap gap-3 mt-10 reveal reveal-4">
           <Link
             href="/listings"
-            className="inline-flex items-center gap-2 px-6 h-11 rounded-full border border-[var(--ink)] bg-[var(--ink)] text-white text-sm font-medium hover:bg-white hover:text-[var(--ink)] transition-colors duration-200"
+            className="inline-flex items-center gap-2 px-6 h-11 rounded-full border border-[var(--ink)] bg-[var(--ink)] text-white text-sm font-medium hover:shadow-[4px_4px_0_var(--ink)] hover:-translate-x-[2px] hover:-translate-y-[2px] transition-all duration-200"
           >
             Browse cars →
           </Link>
           <Link
             href="/sell"
-            className="inline-flex items-center gap-2 px-6 h-11 rounded-full border border-[var(--ink)] bg-transparent text-[var(--ink)] text-sm font-medium hover:bg-[var(--ink)] hover:text-white transition-colors duration-200"
+            className="inline-flex items-center gap-2 px-6 h-11 rounded-full border border-[var(--ink)] bg-transparent text-[var(--ink)] text-sm font-medium hover:bg-[var(--gray-1)] transition-colors duration-200"
           >
             Sell your car
           </Link>

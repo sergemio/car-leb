@@ -17,15 +17,15 @@ export function Button({
   ...props
 }: ButtonProps) {
   const base =
-    'inline-flex items-center justify-center gap-2 rounded-full font-medium transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ink)] focus-visible:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed border';
+    'inline-flex items-center justify-center gap-2 rounded-full font-medium transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ink)] focus-visible:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed border';
 
   const variants = {
-    // Primary — black pill, inverts to white/black outline on hover
+    // Primary — black pill, hover lifts with offset shadow (keeps identity)
     primary:
-      'border-[var(--ink)] bg-[var(--ink)] text-white hover:bg-white hover:text-[var(--ink)]',
-    // Outline — transparent with black border, fills to black on hover
+      'border-[var(--ink)] bg-[var(--ink)] text-white hover:shadow-[4px_4px_0_var(--ink)] hover:-translate-x-[2px] hover:-translate-y-[2px]',
+    // Outline — transparent with black border, hover fills subtly with gray-1
     outline:
-      'border-[var(--ink)] bg-transparent text-[var(--ink)] hover:bg-[var(--ink)] hover:text-white',
+      'border-[var(--ink)] bg-transparent text-[var(--ink)] hover:bg-[var(--gray-1)]',
     // Ghost — no border, muted text, fills bg on hover
     ghost:
       'border-transparent bg-transparent text-[var(--gray-4)] hover:text-[var(--ink)] hover:bg-[var(--gray-1)]',
