@@ -1,8 +1,8 @@
 import { createServerSupabase } from '@/lib/supabase-server';
 import { Badge } from '@/components/ui/Badge';
 import { ProgressBar } from '@/components/ui/ProgressBar';
+import { PhotoGallery } from '@/components/listing/PhotoGallery';
 import { Listing, ListingPhoto } from '@/types';
-import { PHOTO_SLOTS } from '@/lib/constants';
 import { notFound } from 'next/navigation';
 
 interface Props {
@@ -26,9 +26,6 @@ export default async function ListingDetailPage({ params }: Props) {
   if (error || !listing) return notFound();
 
   const l = listing as Listing & { listing_photos: ListingPhoto[] };
-
-  const photosBySlot = new Map(l.listing_photos.map((p) => [p.slot, p]));
-  const frontPhoto = photosBySlot.get('front');
 
   const whatsappNumber = l.seller_whatsapp || l.seller_phone;
   const whatsappLink = whatsappNumber
@@ -74,47 +71,11 @@ export default async function ListingDetailPage({ params }: Props) {
         </div>
       </div>
 
-      {/* Photo hero */}
-      {frontPhoto && (
-        <div className="aspect-[16/9] rounded-2xl overflow-hidden mb-4 border border-[var(--gray-2)] bg-[var(--gray-1)]">
-          <img
-            src={frontPhoto.url}
-            alt={`${l.year} ${l.make} ${l.model}`}
-            className="w-full h-full object-cover"
-          />
-        </div>
-      )}
-
-      {/* Remaining photo slots grid */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-16">
-        {PHOTO_SLOTS.filter((s) => s.slot !== 'front').map((slot) => {
-          const photo = photosBySlot.get(slot.slot);
-          return (
-            <div
-              key={slot.slot}
-              className="aspect-[4/3] rounded-xl overflow-hidden border border-[var(--gray-2)] bg-[var(--gray-1)]"
-            >
-              {photo ? (
-                <img
-                  src={photo.url}
-                  alt={slot.label}
-                  className="w-full h-full object-cover"
-                  loading="lazy"
-                />
-              ) : (
-                <div className="w-full h-full flex flex-col items-center justify-center text-[var(--gray-3)]">
-                  <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                  </svg>
-                  <span className="font-mono text-[10px] uppercase tracking-[0.08em] mt-2">
-                    {slot.label}
-                  </span>
-                </div>
-              )}
-            </div>
-          );
-        })}
-      </div>
+      {/* Photo gallery — hero + grid + clickable lightbox */}
+      <PhotoGallery
+        photos={l.listing_photos}
+        title={`${l.year} ${l.make} ${l.model}`}
+      />
 
       {/* Details + Contact */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
