@@ -16,17 +16,18 @@ type ListingWithPhotos = Listing & { listing_photos: ListingPhoto[] };
 export default async function Home() {
   const supabase = createServerSupabase();
 
-  const { data: topListings } = await supabase
-    .from('listings')
-    .select('*, listing_photos(*)')
-    .eq('status', 'active')
-    .order('completeness_score', { ascending: false })
-    .limit(6);
-
-  const { count: totalCount } = await supabase
-    .from('listings')
-    .select('*', { count: 'exact', head: true })
-    .eq('status', 'active');
+  const [{ data: topListings }, { count: totalCount }] = await Promise.all([
+    supabase
+      .from('listings')
+      .select('*, listing_photos(*)')
+      .eq('status', 'active')
+      .order('completeness_score', { ascending: false })
+      .limit(6),
+    supabase
+      .from('listings')
+      .select('*', { count: 'exact', head: true })
+      .eq('status', 'active'),
+  ]);
 
   const listings: ListingWithPhotos[] = (topListings as ListingWithPhotos[]) || [];
   const totalListings = totalCount ?? listings.length;

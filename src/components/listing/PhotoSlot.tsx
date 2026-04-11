@@ -56,7 +56,7 @@ export function PhotoSlot({ slot, onFileSelect, onRemove }: PhotoSlotProps) {
           className="group relative aspect-[4/3] rounded-xl border border-dashed border-[var(--gray-2)] bg-white hover:border-[var(--ink)] hover:bg-[var(--gray-1)] transition-colors overflow-hidden cursor-pointer"
         >
           <img
-            src={`/sketches/guides/${slot.slot}.png`}
+            src={`/sketches/guides/${slot.slot}.webp`}
             alt={`${slot.label} reference`}
             className="absolute inset-0 w-full h-full object-contain p-2"
             draggable={false}

@@ -110,7 +110,7 @@ export function PhotoGallery({ photos, title }: PhotoGalleryProps) {
           return (
             <div key={slot.slot} className={`${common} relative`}>
               <img
-                src={`/sketches/guides/${slot.slot}.png`}
+                src={`/sketches/guides/${slot.slot}.webp`}
                 alt={`${slot.label} reference`}
                 className="absolute inset-0 w-full h-full object-cover"
               />
