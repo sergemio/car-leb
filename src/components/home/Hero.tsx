@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { Listing, ListingPhoto } from '@/types';
+import { getRandomSketch } from '@/lib/sketches';
 
 interface HeroProps {
   /** Optional featured listing — not used in minimal hero, kept for API compat */
@@ -14,6 +15,10 @@ interface HeroProps {
 // See design-language.md §5 "Motorsport hints" — the ruler and silhouette
 
 export function Hero({ totalListings }: HeroProps) {
+  // Pick a random sketch on every server render — homepage is `force-dynamic`
+  // so each visit gets a different illustration without caching hiccups
+  const sketch = getRandomSketch();
+
   return (
     <section className="border-b border-[var(--gray-2)]">
       <div className="max-w-[1280px] mx-auto px-6 lg:px-8 pt-20 lg:pt-24 pb-16 relative">
@@ -33,22 +38,15 @@ export function Hero({ totalListings }: HeroProps) {
             indexed.
           </h1>
 
-          {/* Line-art car silhouette — absolute positioned to not push layout */}
-          <div className="hidden lg:block absolute right-0 top-1/2 -translate-y-1/2 w-[44%] max-w-[560px] pointer-events-none opacity-95">
-            <svg viewBox="0 0 800 300" className="w-full h-auto" fill="none" stroke="#0A0A0A" strokeWidth="1">
-              <line x1="20" y1="240" x2="780" y2="240" strokeWidth="0.6" />
-              <path d="M60 240 Q70 210 100 200 L180 180 Q220 160 260 150 L360 140 Q440 130 520 140 L620 160 Q680 180 720 210 L760 230 Q770 238 760 240 Z" />
-              <path d="M240 160 Q300 100 400 95 Q500 92 580 130 L620 160" />
-              <path d="M280 155 Q330 115 400 112 L400 155 Z" />
-              <path d="M410 112 Q490 115 570 150 L410 155 Z" />
-              <line x1="400" y1="155" x2="400" y2="230" strokeWidth="0.5" />
-              <circle cx="190" cy="240" r="34" />
-              <circle cx="190" cy="240" r="20" />
-              <circle cx="610" cy="240" r="34" />
-              <circle cx="610" cy="240" r="20" />
-              <circle cx="735" cy="210" r="4" strokeWidth="0.5" />
-              <circle cx="85" cy="215" r="3" strokeWidth="0.5" />
-            </svg>
+          {/* Designer sketch illustration — randomized per page load
+              See src/lib/sketches.ts. All sketches are 1600x900 on white. */}
+          <div className="hidden lg:block absolute right-0 top-1/2 -translate-y-1/2 w-[48%] max-w-[640px] pointer-events-none">
+            <img
+              src={sketch}
+              alt=""
+              aria-hidden
+              className="w-full h-auto select-none"
+            />
           </div>
         </div>
 
