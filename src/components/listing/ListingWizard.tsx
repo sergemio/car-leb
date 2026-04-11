@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/Input';
 import { Select } from '@/components/ui/Select';
 import { Button } from '@/components/ui/Button';
 import { PhotoSlotGrid } from './PhotoSlotGrid';
-import { CompletenessScore } from './CompletenessScore';
+import { QualityRevCounter } from './QualityRevCounter';
 import { calculateCompleteness } from '@/lib/completeness';
 import { supabase } from '@/lib/supabase-client';
 import { compressImage } from '@/lib/compression';
@@ -138,7 +138,11 @@ export function ListingWizard() {
   const STEP_LABELS = ['Details', 'Photos', 'Review'];
 
   return (
-    <div className="max-w-2xl mx-auto">
+    <>
+      {/* Sticky digital rev counter — always visible, rises with completeness */}
+      <QualityRevCounter score={score} tier={tier} />
+
+      <div className="max-w-2xl mx-auto px-6 lg:px-8 py-12 lg:py-16">
       {/* Eyebrow */}
       <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-[var(--gray-4)] mb-4 flex items-center gap-3">
         <span className="w-7 h-px bg-[var(--ink)]" />
@@ -180,11 +184,6 @@ export function ListingWizard() {
             </div>
           );
         })}
-      </div>
-
-      {/* Live completeness score */}
-      <div className="mb-10">
-        <CompletenessScore score={score} tier={tier} />
       </div>
 
       {/* Step 1: Car Details */}
@@ -402,6 +401,7 @@ export function ListingWizard() {
           </div>
         </div>
       )}
-    </div>
+      </div>
+    </>
   );
 }
