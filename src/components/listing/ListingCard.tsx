@@ -11,10 +11,10 @@ interface ListingCardProps {
 
 // Quality tier labels — minimal text chips with a single emoji icon
 const TIER_LABEL: Record<QualityTier, string> = {
-  poor:  'Poor 🔧',
-  fair:  'Fair ⚙️',
-  good:  'Good 🏁',
-  prime: 'Prime 🏆',
+  poor:  'Poor',
+  fair:  'Fair',
+  good:  'Good',
+  prime: 'Prime',
 };
 
 // Compact ref number — 3-digit reference like "Ref. 018"

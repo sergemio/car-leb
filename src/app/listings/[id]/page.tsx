@@ -38,10 +38,10 @@ export default async function ListingDetailPage({ params }: Props) {
     : null;
 
   const TIER_LABELS: Record<typeof l.quality_tier, string> = {
-    poor:  'Poor 🔧',
-    fair:  'Fair ⚙️',
-    good:  'Good 🏁',
-    prime: 'Prime 🏆',
+    poor:  'Poor',
+    fair:  'Fair',
+    good:  'Good',
+    prime: 'Prime',
   };
   const tierLabel = TIER_LABELS[l.quality_tier];
 

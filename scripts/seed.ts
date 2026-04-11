@@ -85,12 +85,29 @@ const SEED_LISTINGS: SeedListing[] = [
 
 async function seed() {
   console.log('Seeding Car Leb demo data...');
+  console.log('Safety: this script ONLY deletes listings tagged source="seed".');
+  console.log('User-created listings are always preserved.');
 
-  await supabase.from('listing_photos').delete().neq('id', '00000000-0000-0000-0000-000000000000');
-  await supabase.from('listings').delete().neq('id', '00000000-0000-0000-0000-000000000000');
+  // Only wipe rows created by this script. User uploads (source='user', the default)
+  // are never touched — see feedback_car-leb-data-safety.md.
+  const { data: seedRows } = await supabase
+    .from('listings')
+    .select('id')
+    .eq('source', 'seed');
+  const seedIds = (seedRows ?? []).map(r => r.id);
+
+  if (seedIds.length > 0) {
+    await supabase.from('listing_photos').delete().in('listing_id', seedIds);
+    await supabase.from('listings').delete().in('id', seedIds);
+    console.log(`Removed ${seedIds.length} previous seed listings (user data untouched).`);
+  }
 
   // Strip the 'photo' field before inserting — it isn't a column on listings.
-  const listingsForInsert = SEED_LISTINGS.map(({ photo: _photo, ...rest }) => rest);
+  // Tag every inserted row as source='seed' so future re-runs only touch our own data.
+  const listingsForInsert = SEED_LISTINGS.map(({ photo: _photo, ...rest }) => ({
+    ...rest,
+    source: 'seed',
+  }));
 
   const { data, error } = await supabase
     .from('listings')
