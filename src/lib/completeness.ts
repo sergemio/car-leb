@@ -5,10 +5,12 @@ import { PHOTO_SLOTS } from './constants';
 // Why this scoring: incentivizes sellers to provide quality info + photos
 //
 // Breakdown:
-//   Essential fields filled:   up to 30 points
-//   Required photo slots (8):  up to 50 points (6.25 each)
-//   Description provided:      up to 10 points
-//   Optional photo bonus:      up to 10 points (capped at 100 total)
+//   Essential car fields (10):   up to 25 points (2.5 each)
+//   Required photo slots (8):    up to 45 points
+//   Seller contact (name+phone): up to 10 points (5 each)
+//   Description (>=10 chars):    up to 10 points
+//   Optional photo bonus:        up to 10 points
+//   Total capped at 100.
 
 interface CompletenessInput {
   make: string;
@@ -22,6 +24,8 @@ interface CompletenessInput {
   location_city: string;
   location_region: string;
   description: string;
+  seller_name: string;
+  seller_phone: string;
 }
 
 interface CompletenessResult {
@@ -35,19 +39,23 @@ export function calculateCompleteness(
 ): CompletenessResult {
   let score = 0;
 
-  // Essential fields: 30 points total (3 points each, 10 fields)
+  // Essential car fields: 25 points total (10 fields, 2.5 each)
   const essentialFields = [
     fields.make, fields.model, fields.year, fields.price_usd,
     fields.mileage_km, fields.fuel_type, fields.transmission,
     fields.condition, fields.location_city, fields.location_region,
   ];
   const filledFields = essentialFields.filter(f => f !== null && f !== '' && f !== undefined);
-  score += Math.round((filledFields.length / essentialFields.length) * 30);
+  score += Math.round((filledFields.length / essentialFields.length) * 25);
 
-  // Required photo slots: 50 points total
+  // Required photo slots: 45 points total
   const requiredSlots = PHOTO_SLOTS.filter(s => s.required);
   const filledRequired = requiredSlots.filter(s => filledSlots.includes(s.slot));
-  score += Math.round((filledRequired.length / requiredSlots.length) * 50);
+  score += Math.round((filledRequired.length / requiredSlots.length) * 45);
+
+  // Seller contact: 10 points total (name + phone, 5 each)
+  if (fields.seller_name && fields.seller_name.trim().length >= 2) score += 5;
+  if (fields.seller_phone && fields.seller_phone.trim().length >= 6) score += 5;
 
   // Description: 10 points if provided (at least 10 chars)
   if (fields.description && fields.description.length >= 10) {
