@@ -1,96 +1,94 @@
 import Link from 'next/link';
 import { createServerSupabase } from '@/lib/supabase-server';
 import { ListingGrid } from '@/components/listing/ListingGrid';
+import { Hero } from '@/components/home/Hero';
+import { CategoryStrip } from '@/components/home/CategoryStrip';
+import { EndingSoon } from '@/components/home/EndingSoon';
+import { Stats } from '@/components/home/Stats';
+import { HowItWorks } from '@/components/home/HowItWorks';
+import { WhyCarLeb } from '@/components/home/WhyCarLeb';
+import { RecentlySold } from '@/components/home/RecentlySold';
+import { Newsletter } from '@/components/home/Newsletter';
 import { Listing, ListingPhoto } from '@/types';
 
 export const dynamic = 'force-dynamic';
 
+type ListingWithPhotos = Listing & { listing_photos: ListingPhoto[] };
+
 export default async function Home() {
   const supabase = createServerSupabase();
 
-  const { data: listings } = await supabase
+  // Fetch top listings ordered by quality score — best first
+  const { data: topListings } = await supabase
     .from('listings')
     .select('*, listing_photos(*)')
     .eq('status', 'active')
     .order('completeness_score', { ascending: false })
     .limit(6);
 
+  // Fetch count for stats
+  const { count: totalCount } = await supabase
+    .from('listings')
+    .select('*', { count: 'exact', head: true })
+    .eq('status', 'active');
+
+  const listings: ListingWithPhotos[] = (topListings as ListingWithPhotos[]) || [];
+  const totalListings = totalCount ?? listings.length;
+
+  // Featured listing for hero = the top-ranked gold one with photos
+  const featured =
+    listings.find(
+      (l) => l.quality_tier === 'gold' && l.listing_photos.length > 0
+    ) ||
+    listings[0] ||
+    null;
+
+  // For ending-soon: top 4 that aren't the featured
+  const endingSoonListings = listings.filter((l) => l.id !== featured?.id).slice(0, 4);
+
+  // For recently-sold placeholder: reuse seed data
+  const recentlySoldListings = listings.slice(2, 5);
+
   return (
     <div>
-      {/* Hero */}
-      <section className="bg-gradient-to-br from-blue-600 to-blue-800 text-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24">
-          <div className="max-w-2xl">
-            <h1 className="text-4xl sm:text-5xl font-bold mb-4">
-              Find your next car in Lebanon
-            </h1>
-            <p className="text-lg sm:text-xl text-blue-100 mb-8">
-              Quality listings. Real photos. Fair prices. The car marketplace Lebanon deserves.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-3">
-              <Link
-                href="/listings"
-                className="px-6 py-3 bg-white text-blue-700 rounded-xl font-semibold text-center hover:bg-blue-50 transition-colors"
-              >
-                Browse Cars
-              </Link>
-              <Link
-                href="/sell"
-                className="px-6 py-3 bg-blue-500 text-white rounded-xl font-semibold text-center hover:bg-blue-400 transition-colors border border-blue-400"
-              >
-                Sell Your Car
-              </Link>
+      <Hero featured={featured} totalListings={totalListings} />
+      <CategoryStrip />
+      <EndingSoon listings={endingSoonListings} />
+
+      {/* Top listings grid */}
+      <section className="border-b border-[var(--border)]">
+        <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-24">
+          <div className="flex items-end justify-between mb-8">
+            <div>
+              <div className="font-mono text-[10px] font-bold tracking-widest text-[var(--text-muted)] mb-2">
+                CURATED
+              </div>
+              <h2 className="font-display text-4xl sm:text-5xl font-medium tracking-tight text-[var(--text)]">
+                Top <em className="italic text-[var(--text-muted)]">listings</em>
+              </h2>
+              <p className="text-[var(--text-muted)] mt-2 text-sm">
+                Hand-picked based on our quality score. Gold tier first.
+              </p>
             </div>
+            <Link
+              href="/listings"
+              className="hidden sm:inline-flex items-center gap-1 text-sm font-mono font-semibold text-[var(--text)] hover:text-[var(--lime-ink)] transition-colors group"
+            >
+              Browse all
+              <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+              </svg>
+            </Link>
           </div>
+          <ListingGrid listings={listings} />
         </div>
       </section>
 
-      {/* Featured listings */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="flex items-center justify-between mb-6">
-          <h2 className="text-2xl font-bold text-gray-900">Top Listings</h2>
-          <Link href="/listings" className="text-blue-600 hover:underline text-sm font-medium">
-            View all
-          </Link>
-        </div>
-        <ListingGrid listings={(listings as (Listing & { listing_photos: ListingPhoto[] })[]) || []} />
-      </section>
-
-      {/* Value props */}
-      <section className="bg-gray-50 py-12">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-8">
-            <div className="text-center">
-              <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center mx-auto mb-3">
-                <svg className="w-6 h-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
-                </svg>
-              </div>
-              <h3 className="font-semibold text-gray-900 mb-1">Structured Photos</h3>
-              <p className="text-sm text-gray-500">Every listing shows the car from all angles. No more guessing.</p>
-            </div>
-            <div className="text-center">
-              <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center mx-auto mb-3">
-                <svg className="w-6 h-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-              </div>
-              <h3 className="font-semibold text-gray-900 mb-1">Quality First</h3>
-              <p className="text-sm text-gray-500">Better listings rank higher. No more $1 prices or empty ads.</p>
-            </div>
-            <div className="text-center">
-              <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center mx-auto mb-3">
-                <svg className="w-6 h-6 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-              </div>
-              <h3 className="font-semibold text-gray-900 mb-1">Fair Prices</h3>
-              <p className="text-sm text-gray-500">Our system flags suspicious prices so you know what's real.</p>
-            </div>
-          </div>
-        </div>
-      </section>
+      <Stats totalListings={totalListings} />
+      <HowItWorks />
+      <RecentlySold listings={recentlySoldListings} />
+      <WhyCarLeb />
+      <Newsletter />
     </div>
   );
 }

@@ -1,26 +1,124 @@
 @import "tailwindcss";
 
+/*
+  Car Leb — Electric White design system
+  Light theme with electric lime accent for CTAs/prices/timers.
+  Photo quality is king — neutral backgrounds make cars pop.
+*/
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Surfaces */
+  --bg: #FAFAF7;          /* warm off-white, not sterile */
+  --surface: #FFFFFF;     /* pure white for cards */
+  --surface-2: #F3F3EE;   /* subtle alt surface for sections */
+  --border: #E8E8E3;      /* hairline borders */
+  --border-strong: #111111; /* editorial accent borders when needed */
+
+  /* Text */
+  --text: #0A0E1A;        /* near-black, warmer than pure */
+  --text-muted: #6B7280;  /* secondary */
+  --text-faint: #9CA3AF;  /* tertiary / placeholders */
+
+  /* Accents */
+  --lime: #C4F82A;        /* electric lime — CTAs, prices, active states */
+  --lime-ink: #0A1000;    /* ink color on lime backgrounds */
+  --lime-soft: #EAFBB4;   /* tinted backgrounds */
+
+  --danger: #E30613;      /* live / ending soon */
+  --danger-soft: #FFE5E7;
+
+  /* Quality tiers */
+  --gold: #F5B800;
+  --silver: #9CA3AF;
+  --bronze: #C97E3D;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-border: var(--border);
+  --color-text: var(--text);
+  --color-text-muted: var(--text-muted);
+  --color-lime: var(--lime);
+  --color-lime-ink: var(--lime-ink);
+  --color-lime-soft: var(--lime-soft);
+  --color-danger: var(--danger);
+
+  --font-display: var(--font-display);
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html, body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-sans), system-ui, sans-serif;
+  font-feature-settings: "ss01", "cv11";
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* Display font helper */
+.font-display {
+  font-family: var(--font-display), serif;
+  letter-spacing: -0.02em;
 }
+
+.font-mono {
+  font-family: var(--font-mono), monospace;
+}
+
+/* Selection color */
+::selection {
+  background: var(--lime);
+  color: var(--lime-ink);
+}
+
+/* Live indicator pulse */
+@keyframes live-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.6; transform: scale(1.15); }
+}
+.live-dot {
+  animation: live-pulse 1.5s ease-in-out infinite;
+}
+
+/* Stagger reveal */
+@keyframes reveal-up {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.reveal {
+  animation: reveal-up 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.reveal-1 { animation-delay: 0.05s; }
+.reveal-2 { animation-delay: 0.15s; }
+.reveal-3 { animation-delay: 0.25s; }
+.reveal-4 { animation-delay: 0.35s; }
+.reveal-5 { animation-delay: 0.45s; }
+
+/* Subtle grain overlay utility */
+.grain {
+  position: relative;
+}
+.grain::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+  opacity: 0.03;
+  mix-blend-mode: multiply;
+}
+
+/* Marquee animation for ticker */
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+.marquee-track {
+  animation: marquee 40s linear infinite;
+}
+
+/* Hide scrollbar on category strip */
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { scrollbar-width: none; }

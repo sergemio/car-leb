@@ -1,22 +1,33 @@
 import type { Metadata } from 'next';
-import { Geist, Geist_Mono } from 'next/font/google';
+import { Bricolage_Grotesque, Plus_Jakarta_Sans, JetBrains_Mono } from 'next/font/google';
 import { Navbar } from '@/components/layout/Navbar';
 import { Footer } from '@/components/layout/Footer';
 import './globals.css';
 
-const geistSans = Geist({
-  variable: '--font-geist-sans',
+// Display font — distinctive, expressive, used for big titles and hero copy
+const bricolage = Bricolage_Grotesque({
+  variable: '--font-display',
   subsets: ['latin'],
+  display: 'swap',
 });
 
-const geistMono = Geist_Mono({
-  variable: '--font-geist-mono',
+// Body font — clean, modern, readable
+const jakarta = Plus_Jakarta_Sans({
+  variable: '--font-sans',
   subsets: ['latin'],
+  display: 'swap',
+});
+
+// Mono font — used for prices, timers, stats (anything numeric that needs tech feel)
+const jetbrains = JetBrains_Mono({
+  variable: '--font-mono',
+  subsets: ['latin'],
+  display: 'swap',
 });
 
 export const metadata: Metadata = {
-  title: 'Car Leb — The Car Marketplace Lebanon Deserves',
-  description: 'Buy and sell cars in Lebanon. Structured listings, quality photos, fair prices.',
+  title: 'Car Leb — The Lebanese Car Marketplace',
+  description: 'Buy and sell cars in Lebanon. Structured listings, verified photos, fair prices. The marketplace Lebanon deserves.',
 };
 
 export default function RootLayout({
@@ -27,9 +38,9 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${bricolage.variable} ${jakarta.variable} ${jetbrains.variable} h-full antialiased`}
     >
-      <body className="min-h-screen flex flex-col bg-white">
+      <body className="min-h-screen flex flex-col bg-[var(--bg)] text-[var(--text)]">
         <Navbar />
         <main className="flex-1">{children}</main>
         <Footer />
