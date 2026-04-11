@@ -31,34 +31,38 @@ export default async function Home() {
   const listings: ListingWithPhotos[] = (topListings as ListingWithPhotos[]) || [];
   const totalListings = totalCount ?? listings.length;
 
-  const featured = listings[0] || null;
+  // Top 2 go in the hero, rest go in Recent Listings below
+  const heroListings = listings.slice(0, 2);
+  const recentListings = listings.slice(2);
 
   return (
     <div>
-      <Hero featured={featured} totalListings={totalListings} />
+      <Hero featuredListings={heroListings} totalListings={totalListings} />
 
-      {/* Recent listings — first thing visitors see after the hero */}
-      <section className="border-b border-[var(--gray-2)]">
-        <div className="max-w-[1280px] mx-auto px-6 lg:px-8 py-20 lg:py-24">
-          <div className="flex items-end justify-between mb-10">
-            <div>
-              <div className="font-mono text-[11px] uppercase tracking-[0.14em] text-[var(--gray-4)] mb-3">
-                — Curated
+      {/* Recent listings — below the hero, skipping the ones already featured */}
+      {recentListings.length > 0 && (
+        <section className="border-b border-[var(--gray-2)]">
+          <div className="max-w-[1280px] mx-auto px-6 lg:px-8 py-20 lg:py-24">
+            <div className="flex items-end justify-between mb-10">
+              <div>
+                <div className="font-mono text-[11px] uppercase tracking-[0.14em] text-[var(--gray-4)] mb-3">
+                  — Curated
+                </div>
+                <h2 className="font-display text-[64px] sm:text-[72px] font-black leading-[0.88] text-[var(--ink)]">
+                  Recent <span className="font-light text-[var(--gray-3)]">listings</span>
+                </h2>
               </div>
-              <h2 className="font-display text-[64px] sm:text-[72px] font-black leading-[0.88] text-[var(--ink)]">
-                Recent <span className="font-light text-[var(--gray-3)]">listings</span>
-              </h2>
+              <Link
+                href="/listings"
+                className="hidden sm:inline-flex items-center gap-2 font-mono text-[12px] font-medium uppercase tracking-[0.1em] text-[var(--ink)] hover:text-[var(--gray-4)] transition-colors"
+              >
+                View all →
+              </Link>
             </div>
-            <Link
-              href="/listings"
-              className="hidden sm:inline-flex items-center gap-2 font-mono text-[12px] font-medium uppercase tracking-[0.1em] text-[var(--ink)] hover:text-[var(--gray-4)] transition-colors"
-            >
-              View all →
-            </Link>
+            <ListingGrid listings={recentListings} />
           </div>
-          <ListingGrid listings={listings} />
-        </div>
-      </section>
+        </section>
+      )}
 
       <WhyCarLeb totalListings={totalListings} />
     </div>
