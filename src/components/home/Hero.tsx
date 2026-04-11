@@ -2,166 +2,99 @@ import Link from 'next/link';
 import { Listing, ListingPhoto } from '@/types';
 
 interface HeroProps {
-  /** Featured listing shown on the right side */
+  /** Optional featured listing — not used in minimal hero, kept for API compat */
   featured: (Listing & { listing_photos: ListingPhoto[] }) | null;
-  /** Total active listings across the platform */
   totalListings: number;
 }
 
-// Hero section — the "above the fold" moment
-// Split layout: copy + search left, featured listing card right
-// Uses the top-scoring listing as the showcase to brag about quality
-export function Hero({ featured, totalListings }: HeroProps) {
-  const featuredPhoto =
-    featured?.listing_photos.find((p) => p.slot === 'front') || featured?.listing_photos[0];
+// Hero — minimal editorial layout
+// Left: giant title + subtitle + CTAs + stats
+// Right: line-art car silhouette (Porsche-ish shape)
+// Below: engineering ruler with "00 / Scale 1:1 / N listings"
+// See design-language.md §5 "Motorsport hints" — the ruler and silhouette
 
+export function Hero({ totalListings }: HeroProps) {
   return (
-    <section className="relative border-b border-[var(--border)] overflow-hidden">
-      {/* Lime accent blob — decorative */}
-      <div
-        aria-hidden
-        className="absolute -top-32 -right-32 w-[600px] h-[600px] rounded-full bg-[var(--lime)] opacity-20 blur-3xl pointer-events-none"
-      />
+    <section className="border-b border-[var(--gray-2)]">
+      <div className="max-w-[1280px] mx-auto px-6 lg:px-8 pt-20 lg:pt-24 pb-16 relative">
+        {/* Eyebrow */}
+        <div className="font-mono text-[11px] uppercase tracking-[0.2em] text-[var(--gray-4)] mb-10 flex items-center gap-3 reveal reveal-1">
+          <span className="w-7 h-px bg-[var(--ink)]" />
+          LEBANON · EST. 2026
+        </div>
 
-      <div className="relative max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-20">
-        <div className="grid lg:grid-cols-12 gap-8 lg:gap-12 items-center">
-          {/* Copy + search */}
-          <div className="lg:col-span-6 space-y-6 reveal reveal-1">
-            {/* Pre-title with LIVE indicator */}
-            <div className="inline-flex items-center gap-2 font-mono text-xs font-bold tracking-widest text-[var(--text-muted)]">
-              <span className="relative flex h-2 w-2">
-                <span className="absolute inline-flex h-full w-full rounded-full bg-[var(--danger)] opacity-75 live-dot" />
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-[var(--danger)]" />
-              </span>
-              THE LEBANESE CAR MARKETPLACE
-            </div>
+        {/* Title + line-art car */}
+        <div className="relative">
+          <h1 className="font-display text-[64px] sm:text-[96px] lg:text-[128px] font-normal leading-[0.9] tracking-[-0.045em] text-[var(--ink)] max-w-[900px] reveal reveal-2">
+            The cars
+            <br />
+            of <em className="italic font-light text-[var(--gray-3)]">Lebanon</em>,
+            <br />
+            indexed.
+          </h1>
 
-            {/* Headline */}
-            <h1 className="font-display text-5xl sm:text-6xl lg:text-7xl font-medium leading-[0.95] text-[var(--text)] tracking-tight">
-              Find your next{' '}
-              <em className="italic font-normal text-[var(--text-muted)]">ride</em>
-              <br />
-              in Lebanon.
-            </h1>
-
-            <p className="text-base lg:text-lg text-[var(--text-muted)] max-w-lg leading-relaxed">
-              Quality listings. Structured photos. Fair prices. The marketplace built for buyers
-              who want the full picture — not just a blurry thumbnail.
-            </p>
-
-            {/* Hero search bar — bigger, bolder */}
-            <form
-              action="/listings"
-              method="get"
-              className="flex items-center gap-2 p-2 bg-[var(--surface)] rounded-full border border-[var(--border)] shadow-lg shadow-black/5 max-w-xl focus-within:border-[var(--text)] transition-colors"
-            >
-              <svg className="w-5 h-5 text-[var(--text-muted)] ml-3 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-              </svg>
-              <input
-                type="text"
-                name="q"
-                placeholder="BMW M4, Range Rover Sport, Toyota Camry..."
-                className="flex-1 bg-transparent outline-none text-base placeholder:text-[var(--text-faint)]"
-              />
-              <button
-                type="submit"
-                className="px-5 h-11 rounded-full bg-[var(--text)] text-[var(--bg)] font-semibold text-sm hover:brightness-110 transition-all shrink-0"
-              >
-                Search
-              </button>
-            </form>
-
-            {/* Stats strip */}
-            <div className="flex flex-wrap items-center gap-x-8 gap-y-3 pt-4">
-              <div>
-                <div className="font-mono text-2xl font-bold text-[var(--text)]">
-                  {totalListings}
-                </div>
-                <div className="text-[11px] font-mono uppercase tracking-wider text-[var(--text-muted)]">
-                  active listings
-                </div>
-              </div>
-              <div className="h-10 w-px bg-[var(--border)]" />
-              <div>
-                <div className="font-mono text-2xl font-bold text-[var(--text)]">6</div>
-                <div className="text-[11px] font-mono uppercase tracking-wider text-[var(--text-muted)]">
-                  regions
-                </div>
-              </div>
-              <div className="h-10 w-px bg-[var(--border)]" />
-              <div>
-                <div className="font-mono text-2xl font-bold text-[var(--text)]">$280K+</div>
-                <div className="text-[11px] font-mono uppercase tracking-wider text-[var(--text-muted)]">
-                  total value
-                </div>
-              </div>
-            </div>
+          {/* Line-art car silhouette — absolute positioned to not push layout */}
+          <div className="hidden lg:block absolute right-0 top-1/2 -translate-y-1/2 w-[44%] max-w-[560px] pointer-events-none opacity-95">
+            <svg viewBox="0 0 800 300" className="w-full h-auto" fill="none" stroke="#0A0A0A" strokeWidth="1">
+              <line x1="20" y1="240" x2="780" y2="240" strokeWidth="0.6" />
+              <path d="M60 240 Q70 210 100 200 L180 180 Q220 160 260 150 L360 140 Q440 130 520 140 L620 160 Q680 180 720 210 L760 230 Q770 238 760 240 Z" />
+              <path d="M240 160 Q300 100 400 95 Q500 92 580 130 L620 160" />
+              <path d="M280 155 Q330 115 400 112 L400 155 Z" />
+              <path d="M410 112 Q490 115 570 150 L410 155 Z" />
+              <line x1="400" y1="155" x2="400" y2="230" strokeWidth="0.5" />
+              <circle cx="190" cy="240" r="34" />
+              <circle cx="190" cy="240" r="20" />
+              <circle cx="610" cy="240" r="34" />
+              <circle cx="610" cy="240" r="20" />
+              <circle cx="735" cy="210" r="4" strokeWidth="0.5" />
+              <circle cx="85" cy="215" r="3" strokeWidth="0.5" />
+            </svg>
           </div>
+        </div>
 
-          {/* Featured listing card — right side */}
-          {featured && (
-            <div className="lg:col-span-6 reveal reveal-3">
-              <Link
-                href={`/listings/${featured.id}`}
-                className="group block relative rounded-3xl overflow-hidden bg-[var(--surface)] border border-[var(--border)] hover:border-[var(--text)] transition-all shadow-2xl shadow-black/10"
-              >
-                {/* Photo */}
-                <div className="relative aspect-[4/3] overflow-hidden">
-                  {featuredPhoto ? (
-                    <img
-                      src={featuredPhoto.url}
-                      alt={`${featured.year} ${featured.make} ${featured.model}`}
-                      className="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-700"
-                    />
-                  ) : (
-                    <div className="w-full h-full bg-gradient-to-br from-[var(--surface-2)] to-[var(--border)]" />
-                  )}
+        {/* Subtitle */}
+        <p className="text-[17px] leading-[1.55] text-[var(--gray-4)] max-w-[520px] mt-8 reveal reveal-3">
+          A quiet marketplace for quality listings. Structured photos, fair prices, no chaos.
+          Built for buyers who want to see the full picture.
+        </p>
 
-                  {/* Top bar — featured label + tier */}
-                  <div className="absolute top-4 left-4 right-4 flex items-start justify-between">
-                    <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[var(--lime)] text-[var(--lime-ink)] text-[10px] font-mono font-bold tracking-widest">
-                      <span className="w-1.5 h-1.5 rounded-full bg-[var(--lime-ink)]" />
-                      FEATURED
-                    </span>
-                    <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-[var(--gold)] text-[#2B1A00] text-[10px] font-mono font-bold tracking-wider">
-                      GOLD
-                    </span>
-                  </div>
+        {/* CTAs */}
+        <div className="flex flex-wrap gap-3 mt-10 reveal reveal-4">
+          <Link
+            href="/listings"
+            className="inline-flex items-center gap-2 px-6 h-11 rounded-full border border-[var(--ink)] bg-[var(--ink)] text-white text-sm font-medium hover:bg-white hover:text-[var(--ink)] transition-colors duration-200"
+          >
+            Browse cars →
+          </Link>
+          <Link
+            href="/sell"
+            className="inline-flex items-center gap-2 px-6 h-11 rounded-full border border-[var(--ink)] bg-transparent text-[var(--ink)] text-sm font-medium hover:bg-[var(--ink)] hover:text-white transition-colors duration-200"
+          >
+            Sell your car
+          </Link>
+        </div>
 
-                  {/* Bottom overlay with info */}
-                  <div className="absolute inset-x-0 bottom-0 p-5 bg-gradient-to-t from-black/80 via-black/40 to-transparent text-white">
-                    <div className="flex items-end justify-between gap-4">
-                      <div>
-                        <h3 className="font-display text-2xl font-medium leading-tight">
-                          {featured.year} {featured.make} {featured.model}
-                        </h3>
-                        <p className="text-sm text-white/80 mt-1">
-                          {featured.location_city} · {featured.mileage_km.toLocaleString()} km
-                        </p>
-                      </div>
-                      <div className="text-right shrink-0">
-                        <div className="font-mono text-2xl font-bold">
-                          ${featured.price_usd.toLocaleString()}
-                        </div>
-                        <div className="text-[10px] font-mono tracking-wider text-white/70">USD</div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* View details row */}
-                <div className="flex items-center justify-between px-5 py-4 bg-[var(--surface)]">
-                  <span className="font-mono text-xs uppercase tracking-wider text-[var(--text-muted)]">
-                    View listing →
-                  </span>
-                  <span className="text-[11px] font-mono text-[var(--text-faint)]">
-                    8 / 8 photos
-                  </span>
-                </div>
-              </Link>
-            </div>
-          )}
+        {/* Ruler — engineering graduation marker */}
+        <div className="mt-24 pb-6 reveal reveal-5">
+          <div className="flex items-end gap-0 h-8 overflow-hidden">
+            {Array.from({ length: 61 }).map((_, i) => {
+              const isXL = i % 10 === 0;
+              const isLG = i % 5 === 0 && !isXL;
+              const height = isXL ? 22 : isLG ? 16 : 8;
+              return (
+                <span
+                  key={i}
+                  className="flex-1 border-l border-[var(--ink)]"
+                  style={{ height }}
+                />
+              );
+            })}
+          </div>
+          <div className="flex justify-between mt-2 font-mono text-[10px] uppercase tracking-[0.14em]">
+            <span className="text-[var(--ink)]">00</span>
+            <span className="text-[var(--gray-4)]">Scale 1:1</span>
+            <span className="text-[var(--ink)]">{totalListings} listings</span>
+          </div>
         </div>
       </div>
     </section>

@@ -1,24 +1,25 @@
 import type { Metadata } from 'next';
-import { Bricolage_Grotesque, Plus_Jakarta_Sans, JetBrains_Mono } from 'next/font/google';
+import { Bricolage_Grotesque, IBM_Plex_Sans, JetBrains_Mono } from 'next/font/google';
 import { Navbar } from '@/components/layout/Navbar';
 import { Footer } from '@/components/layout/Footer';
 import './globals.css';
 
-// Display font — distinctive, expressive, used for big titles and hero copy
+// Display font — serif-ish, expressive, used for hero and section titles
 const bricolage = Bricolage_Grotesque({
   variable: '--font-display',
   subsets: ['latin'],
   display: 'swap',
 });
 
-// Body font — clean, modern, readable
-const jakarta = Plus_Jakarta_Sans({
+// Body font — IBM Plex Sans, editorial feel, technical but readable
+const plex = IBM_Plex_Sans({
   variable: '--font-sans',
   subsets: ['latin'],
+  weight: ['300', '400', '500', '600'],
   display: 'swap',
 });
 
-// Mono font — used for prices, timers, stats (anything numeric that needs tech feel)
+// Mono font — numbers, references, captions, stats
 const jetbrains = JetBrains_Mono({
   variable: '--font-mono',
   subsets: ['latin'],
@@ -27,7 +28,8 @@ const jetbrains = JetBrains_Mono({
 
 export const metadata: Metadata = {
   title: 'Car Leb — The Lebanese Car Marketplace',
-  description: 'Buy and sell cars in Lebanon. Structured listings, verified photos, fair prices. The marketplace Lebanon deserves.',
+  description:
+    'A quiet marketplace for quality car listings in Lebanon. Structured photos, fair prices, no chaos.',
 };
 
 export default function RootLayout({
@@ -38,9 +40,9 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${bricolage.variable} ${jakarta.variable} ${jetbrains.variable} h-full antialiased`}
+      className={`${bricolage.variable} ${plex.variable} ${jetbrains.variable} h-full antialiased`}
     >
-      <body className="min-h-screen flex flex-col bg-[var(--bg)] text-[var(--text)]">
+      <body className="min-h-screen flex flex-col bg-[var(--white)] text-[var(--ink)]">
         <Navbar />
         <main className="flex-1">{children}</main>
         <Footer />

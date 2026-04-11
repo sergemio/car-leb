@@ -2,23 +2,22 @@ import Link from 'next/link';
 import { createServerSupabase } from '@/lib/supabase-server';
 import { ListingGrid } from '@/components/listing/ListingGrid';
 import { Hero } from '@/components/home/Hero';
-import { CategoryStrip } from '@/components/home/CategoryStrip';
-import { EndingSoon } from '@/components/home/EndingSoon';
 import { Stats } from '@/components/home/Stats';
-import { HowItWorks } from '@/components/home/HowItWorks';
 import { WhyCarLeb } from '@/components/home/WhyCarLeb';
-import { RecentlySold } from '@/components/home/RecentlySold';
-import { Newsletter } from '@/components/home/Newsletter';
 import { Listing, ListingPhoto } from '@/types';
 
 export const dynamic = 'force-dynamic';
 
 type ListingWithPhotos = Listing & { listing_photos: ListingPhoto[] };
 
+// Homepage — minimal editorial layout
+// Sections: Hero → Stats → Recent listings → Why Car Leb
+// Following design-language.md — B&W editorial, no dense blocks,
+// every section breathes, photos dominate
+
 export default async function Home() {
   const supabase = createServerSupabase();
 
-  // Fetch top listings ordered by quality score — best first
   const { data: topListings } = await supabase
     .from('listings')
     .select('*, listing_photos(*)')
@@ -26,7 +25,6 @@ export default async function Home() {
     .order('completeness_score', { ascending: false })
     .limit(6);
 
-  // Fetch count for stats
   const { count: totalCount } = await supabase
     .from('listings')
     .select('*', { count: 'exact', head: true })
@@ -35,60 +33,37 @@ export default async function Home() {
   const listings: ListingWithPhotos[] = (topListings as ListingWithPhotos[]) || [];
   const totalListings = totalCount ?? listings.length;
 
-  // Featured listing for hero = the top-ranked gold one with photos
-  const featured =
-    listings.find(
-      (l) => l.quality_tier === 'gold' && l.listing_photos.length > 0
-    ) ||
-    listings[0] ||
-    null;
-
-  // For ending-soon: top 4 that aren't the featured
-  const endingSoonListings = listings.filter((l) => l.id !== featured?.id).slice(0, 4);
-
-  // For recently-sold placeholder: reuse seed data
-  const recentlySoldListings = listings.slice(2, 5);
+  const featured = listings[0] || null;
 
   return (
     <div>
       <Hero featured={featured} totalListings={totalListings} />
-      <CategoryStrip />
-      <EndingSoon listings={endingSoonListings} />
+      <Stats totalListings={totalListings} />
 
-      {/* Top listings grid */}
-      <section className="border-b border-[var(--border)]">
-        <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-24">
-          <div className="flex items-end justify-between mb-8">
+      {/* Recent listings grid */}
+      <section className="border-b border-[var(--gray-2)]">
+        <div className="max-w-[1280px] mx-auto px-6 lg:px-8 py-24">
+          <div className="flex items-end justify-between mb-12">
             <div>
-              <div className="font-mono text-[10px] font-bold tracking-widest text-[var(--text-muted)] mb-2">
-                CURATED
+              <div className="font-mono text-[11px] uppercase tracking-[0.14em] text-[var(--gray-4)] mb-3">
+                — Curated
               </div>
-              <h2 className="font-display text-4xl sm:text-5xl font-medium tracking-tight text-[var(--text)]">
-                Top <em className="italic text-[var(--text-muted)]">listings</em>
+              <h2 className="font-display text-[56px] font-normal leading-[0.95] tracking-[-0.035em] text-[var(--ink)]">
+                Recent <em className="italic font-light text-[var(--gray-3)]">listings</em>
               </h2>
-              <p className="text-[var(--text-muted)] mt-2 text-sm">
-                Hand-picked based on our quality score. Gold tier first.
-              </p>
             </div>
             <Link
               href="/listings"
-              className="hidden sm:inline-flex items-center gap-1 text-sm font-mono font-semibold text-[var(--text)] hover:text-[var(--lime-ink)] transition-colors group"
+              className="hidden sm:inline-flex items-center gap-2 font-mono text-[12px] font-medium uppercase tracking-[0.1em] text-[var(--ink)] hover:text-[var(--gray-4)] transition-colors"
             >
-              Browse all
-              <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-              </svg>
+              View all →
             </Link>
           </div>
           <ListingGrid listings={listings} />
         </div>
       </section>
 
-      <Stats totalListings={totalListings} />
-      <HowItWorks />
-      <RecentlySold listings={recentlySoldListings} />
       <WhyCarLeb />
-      <Newsletter />
     </div>
   );
 }
