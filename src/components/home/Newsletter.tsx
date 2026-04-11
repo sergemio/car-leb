@@ -1,5 +1,8 @@
+'use client';
+
 // Newsletter section — last CTA before footer
 // Placeholder: form doesn't submit anywhere yet
+// Client component because the form has onSubmit handler
 
 export function Newsletter() {
   return (
