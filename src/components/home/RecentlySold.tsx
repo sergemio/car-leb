@@ -22,8 +22,8 @@ export function RecentlySold({ listings }: RecentlySoldProps) {
             <div className="font-mono text-[10px] font-bold tracking-widest text-[var(--text-muted)] mb-2">
               SOCIAL PROOF
             </div>
-            <h2 className="font-display text-4xl sm:text-5xl font-medium tracking-tight text-[var(--text)]">
-              Recently <em className="italic text-[var(--text-muted)]">sold</em>
+            <h2 className="font-display text-5xl sm:text-6xl font-black text-[var(--text)]">
+              Recently <span className="font-light text-[var(--text-muted)]">sold</span>
             </h2>
             <p className="text-[var(--text-muted)] mt-2 text-sm">
               Real deals closed through Car Leb over the past week.

@@ -69,8 +69,10 @@ html, body {
 }
 
 .font-display {
-  font-family: var(--font-display), 'Bricolage Grotesque', serif;
-  letter-spacing: -0.02em;
+  font-family: var(--font-display), 'Big Shoulders Display', Impact, sans-serif;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
 }
 .font-mono {
   font-family: var(--font-mono), 'JetBrains Mono', monospace;

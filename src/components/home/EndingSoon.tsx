@@ -76,8 +76,8 @@ export function EndingSoon({ listings }: EndingSoonProps) {
               </span>
               ENDING SOON
             </div>
-            <h2 className="font-display text-4xl sm:text-5xl font-medium tracking-tight text-[var(--text)]">
-              Auctions <em className="italic text-[var(--text-muted)]">in progress</em>
+            <h2 className="font-display text-5xl sm:text-6xl font-black text-[var(--text)]">
+              Auctions <span className="font-light text-[var(--text-muted)]">in progress</span>
             </h2>
             <p className="text-[var(--text-muted)] mt-2 text-sm">
               Real-time bidding on hand-picked cars. Anti-sniping built in.

@@ -48,8 +48,8 @@ export default async function ListingDetailPage({ params }: Props) {
             <span className="w-7 h-px bg-[var(--ink)]" />
             Ref. {l.id.slice(0, 8)}
           </div>
-          <h1 className="font-display text-[44px] sm:text-[56px] font-normal leading-[0.95] tracking-[-0.03em] text-[var(--ink)]">
-            {l.year} {l.make} <em className="italic font-light text-[var(--gray-3)]">{l.model}</em>
+          <h1 className="font-display text-[56px] sm:text-[72px] font-black leading-[0.88] text-[var(--ink)]">
+            {l.year} {l.make} <span className="font-light text-[var(--gray-3)]">{l.model}</span>
           </h1>
           <p className="text-[14px] text-[var(--gray-4)] mt-3">
             {l.location_city}, {l.location_region}

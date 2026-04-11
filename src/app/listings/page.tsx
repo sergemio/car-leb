@@ -26,8 +26,8 @@ export default function ListingsPage() {
           <span className="w-7 h-px bg-[var(--ink)]" />
           Catalogue
         </div>
-        <h1 className="font-display text-[56px] font-normal leading-[0.95] tracking-[-0.035em] text-[var(--ink)]">
-          Browse all <em className="italic font-light text-[var(--gray-3)]">listings</em>.
+        <h1 className="font-display text-[72px] font-black leading-[0.88] text-[var(--ink)]">
+          Browse all <span className="font-light text-[var(--gray-3)]">listings</span>.
         </h1>
       </div>
 

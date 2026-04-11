@@ -38,7 +38,7 @@ function Stat({
 }) {
   return (
     <div className={`px-6 ${first ? 'lg:pl-0 lg:border-l-0' : 'lg:border-l lg:border-[var(--gray-2)]'}`}>
-      <div className="font-display text-[72px] font-normal leading-[0.9] tracking-[-0.04em] text-[var(--ink)]">
+      <div className="font-display text-[72px] font-black leading-[0.88] text-[var(--ink)]">
         {value}
       </div>
       <div className="mt-2 font-mono text-[11px] uppercase tracking-[0.14em] text-[var(--gray-4)]">

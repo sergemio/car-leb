@@ -48,8 +48,8 @@ export default async function Home() {
               <div className="font-mono text-[11px] uppercase tracking-[0.14em] text-[var(--gray-4)] mb-3">
                 — Curated
               </div>
-              <h2 className="font-display text-[56px] font-normal leading-[0.95] tracking-[-0.035em] text-[var(--ink)]">
-                Recent <em className="italic font-light text-[var(--gray-3)]">listings</em>
+              <h2 className="font-display text-[72px] font-black leading-[0.88] text-[var(--ink)]">
+                Recent <span className="font-light text-[var(--gray-3)]">listings</span>
               </h2>
             </div>
             <Link

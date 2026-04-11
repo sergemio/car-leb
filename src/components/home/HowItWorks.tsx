@@ -38,8 +38,8 @@ export function HowItWorks() {
           <div className="font-mono text-[10px] font-bold tracking-widest text-[var(--text-muted)] mb-2">
             FOR SELLERS
           </div>
-          <h2 className="font-display text-4xl sm:text-5xl font-medium tracking-tight text-[var(--text)]">
-            Sell your car in <em className="italic text-[var(--text-muted)]">three steps</em>
+          <h2 className="font-display text-5xl sm:text-6xl font-black text-[var(--text)]">
+            Sell your car in <span className="font-light text-[var(--text-muted)]">three steps</span>
           </h2>
         </div>
 

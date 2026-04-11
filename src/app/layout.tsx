@@ -1,13 +1,14 @@
 import type { Metadata } from 'next';
-import { Bricolage_Grotesque, IBM_Plex_Sans, JetBrains_Mono } from 'next/font/google';
+import { Big_Shoulders, IBM_Plex_Sans, JetBrains_Mono } from 'next/font/google';
 import { Navbar } from '@/components/layout/Navbar';
 import { Footer } from '@/components/layout/Footer';
 import './globals.css';
 
-// Display font — serif-ish, expressive, used for hero and section titles
-const bricolage = Bricolage_Grotesque({
+// Display font — condensed industrial sans, motorsport/Chicago-steel vibe
+const bigShoulders = Big_Shoulders({
   variable: '--font-display',
   subsets: ['latin'],
+  weight: ['400', '500', '600', '700', '800', '900'],
   display: 'swap',
 });
 
@@ -40,7 +41,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${bricolage.variable} ${plex.variable} ${jetbrains.variable} h-full antialiased`}
+      className={`${bigShoulders.variable} ${plex.variable} ${jetbrains.variable} h-full antialiased`}
     >
       <body className="min-h-screen flex flex-col bg-[var(--white)] text-[var(--ink)]">
         <Navbar />

@@ -30,10 +30,10 @@ export function Hero({ totalListings }: HeroProps) {
 
         {/* Title + line-art car */}
         <div className="relative">
-          <h1 className="font-display text-[64px] sm:text-[96px] lg:text-[128px] font-normal leading-[0.9] tracking-[-0.045em] text-[var(--ink)] max-w-[900px] reveal reveal-2">
+          <h1 className="font-display text-[72px] sm:text-[112px] lg:text-[148px] font-black leading-[0.85] text-[var(--ink)] max-w-[900px] reveal reveal-2">
             The cars
             <br />
-            of <em className="italic font-light text-[var(--gray-3)]">Lebanon</em>,
+            of <span className="font-light text-[var(--gray-3)]">Lebanon</span>,
             <br />
             indexed.
           </h1>

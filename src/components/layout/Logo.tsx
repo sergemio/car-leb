@@ -18,7 +18,7 @@ export function Logo({ tone = 'dark', gaugeWidth = 40 }: LogoProps) {
   return (
     <Link
       href="/"
-      className={`inline-flex items-center gap-1 font-display text-2xl font-medium tracking-tight leading-none ${text}`}
+      className={`inline-flex items-center gap-1 font-display text-[28px] font-bold leading-none ${text}`}
     >
       <span className="pt-1.5">Car</span>
       <span

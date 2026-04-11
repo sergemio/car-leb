@@ -34,9 +34,9 @@ export function WhyCarLeb() {
   return (
     <section id="about" className="border-b border-[var(--gray-2)] bg-[var(--gray-1)]">
       <div className="max-w-[1280px] mx-auto px-6 lg:px-8 py-24">
-        <h2 className="font-display text-[56px] font-normal leading-[0.95] tracking-[-0.035em] text-[var(--ink)] max-w-[640px] mb-12">
+        <h2 className="font-display text-[72px] font-black leading-[0.88] text-[var(--ink)] max-w-[640px] mb-12">
           Built different.<br />
-          <em className="italic font-light text-[var(--gray-3)]">Built for Lebanon.</em>
+          <span className="font-light text-[var(--gray-3)]">Built for Lebanon.</span>
         </h2>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-0">

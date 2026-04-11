@@ -144,8 +144,8 @@ export function ListingWizard() {
         <span className="w-7 h-px bg-[var(--ink)]" />
         Sell your car
       </div>
-      <h1 className="font-display text-[44px] font-normal leading-[0.95] tracking-[-0.03em] text-[var(--ink)] mb-10">
-        List a <em className="italic font-light text-[var(--gray-3)]">car</em>.
+      <h1 className="font-display text-[64px] font-black leading-[0.88] text-[var(--ink)] mb-10">
+        List a <span className="font-light text-[var(--gray-3)]">car</span>.
       </h1>
 
       {/* Progress indicator — minimal numbered steps */}
