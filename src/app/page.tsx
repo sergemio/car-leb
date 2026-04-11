@@ -2,7 +2,6 @@ import Link from 'next/link';
 import { createServerSupabase } from '@/lib/supabase-server';
 import { ListingGrid } from '@/components/listing/ListingGrid';
 import { Hero } from '@/components/home/Hero';
-import { Stats } from '@/components/home/Stats';
 import { WhyCarLeb } from '@/components/home/WhyCarLeb';
 import { Listing, ListingPhoto } from '@/types';
 
@@ -10,10 +9,9 @@ export const dynamic = 'force-dynamic';
 
 type ListingWithPhotos = Listing & { listing_photos: ListingPhoto[] };
 
-// Homepage — minimal editorial layout
-// Sections: Hero → Stats → Recent listings → Why Car Leb
-// Following design-language.md — B&W editorial, no dense blocks,
-// every section breathes, photos dominate
+// Homepage — Cars & Bids rhythm: Hero with featured car, then listings
+// IMMEDIATELY so visitors see inventory above the fold. Stats live inside
+// the About section further down. See design-language.md.
 
 export default async function Home() {
   const supabase = createServerSupabase();
@@ -38,17 +36,16 @@ export default async function Home() {
   return (
     <div>
       <Hero featured={featured} totalListings={totalListings} />
-      <Stats totalListings={totalListings} />
 
-      {/* Recent listings grid */}
+      {/* Recent listings — first thing visitors see after the hero */}
       <section className="border-b border-[var(--gray-2)]">
-        <div className="max-w-[1280px] mx-auto px-6 lg:px-8 py-24">
-          <div className="flex items-end justify-between mb-12">
+        <div className="max-w-[1280px] mx-auto px-6 lg:px-8 py-20 lg:py-24">
+          <div className="flex items-end justify-between mb-10">
             <div>
               <div className="font-mono text-[11px] uppercase tracking-[0.14em] text-[var(--gray-4)] mb-3">
                 — Curated
               </div>
-              <h2 className="font-display text-[72px] font-black leading-[0.88] text-[var(--ink)]">
+              <h2 className="font-display text-[64px] sm:text-[72px] font-black leading-[0.88] text-[var(--ink)]">
                 Recent <span className="font-light text-[var(--gray-3)]">listings</span>
               </h2>
             </div>
@@ -63,7 +60,7 @@ export default async function Home() {
         </div>
       </section>
 
-      <WhyCarLeb />
+      <WhyCarLeb totalListings={totalListings} />
     </div>
   );
 }

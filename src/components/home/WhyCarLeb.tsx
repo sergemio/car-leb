@@ -1,4 +1,6 @@
-// Why Car Leb — 4 pillars on a gray-1 band
+// About section — 4 pillars + the marketplace stats row
+// Lives at the bottom of the home page; stats were moved out of the
+// above-the-fold area to push listings higher.
 // See design-language.md §8 "Pillar"
 
 interface Pillar {
@@ -6,6 +8,16 @@ interface Pillar {
   title: string;
   body: string;
 }
+
+interface WhyCarLebProps {
+  totalListings: number;
+}
+
+const STATIC_STATS = [
+  { value: '06',    label: 'Regions' },
+  { value: '3d',    label: 'Avg. time to sell' },
+  { value: '280K+', label: 'Total value USD' },
+];
 
 const PILLARS: Pillar[] = [
   {
@@ -30,7 +42,7 @@ const PILLARS: Pillar[] = [
   },
 ];
 
-export function WhyCarLeb() {
+export function WhyCarLeb({ totalListings }: WhyCarLebProps) {
   return (
     <section id="about" className="border-b border-[var(--gray-2)] bg-[var(--gray-1)]">
       <div className="max-w-[1280px] mx-auto px-6 lg:px-8 py-24">
@@ -57,7 +69,41 @@ export function WhyCarLeb() {
             </div>
           ))}
         </div>
+
+        {/* Stats row — moved here from the home top */}
+        <div className="mt-20 pt-12 border-t border-[var(--gray-2)]">
+          <div className="font-mono text-[11px] uppercase tracking-[0.14em] text-[var(--gray-4)] mb-8">
+            — By the numbers
+          </div>
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-0">
+            <Stat value={totalListings.toString().padStart(2, '0')} label="Active listings" first />
+            {STATIC_STATS.map((s) => (
+              <Stat key={s.label} value={s.value} label={s.label} />
+            ))}
+          </div>
+        </div>
       </div>
     </section>
+  );
+}
+
+function Stat({
+  value,
+  label,
+  first = false,
+}: {
+  value: string;
+  label: string;
+  first?: boolean;
+}) {
+  return (
+    <div className={`px-6 ${first ? 'lg:pl-0 lg:border-l-0' : 'lg:border-l lg:border-[var(--gray-3)]/40'}`}>
+      <div className="font-display text-[56px] font-black leading-[0.88] text-[var(--ink)]">
+        {value}
+      </div>
+      <div className="mt-2 font-mono text-[11px] uppercase tracking-[0.14em] text-[var(--gray-4)]">
+        {label}
+      </div>
+    </div>
   );
 }
