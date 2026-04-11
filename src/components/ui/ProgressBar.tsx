@@ -1,3 +1,6 @@
+// Minimal progress bar — ink fill on gray-2 track, mono % label
+// No color stops — the listing quality label carries the meaning
+
 interface ProgressBarProps {
   value: number;
   showLabel?: boolean;
@@ -5,24 +8,19 @@ interface ProgressBarProps {
 }
 
 export function ProgressBar({ value, showLabel = true, className = '' }: ProgressBarProps) {
-  const clampedValue = Math.min(100, Math.max(0, value));
-
-  const color =
-    clampedValue >= 80 ? 'bg-green-500' :
-    clampedValue >= 50 ? 'bg-yellow-500' :
-    'bg-red-500';
+  const clamped = Math.min(100, Math.max(0, value));
 
   return (
-    <div className={`flex items-center gap-3 ${className}`}>
-      <div className="flex-1 bg-gray-200 rounded-full h-2.5">
+    <div className={`flex items-center gap-4 ${className}`}>
+      <div className="flex-1 bg-[var(--gray-2)] rounded-full h-1.5 overflow-hidden">
         <div
-          className={`h-2.5 rounded-full transition-all duration-500 ease-out ${color}`}
-          style={{ width: `${clampedValue}%` }}
+          className="h-full rounded-full bg-[var(--ink)] transition-all duration-500 ease-out"
+          style={{ width: `${clamped}%` }}
         />
       </div>
       {showLabel && (
-        <span className="text-sm font-medium text-gray-700 min-w-[3ch]">
-          {clampedValue}%
+        <span className="font-mono text-[11px] font-bold text-[var(--ink)] min-w-[3ch] tabular-nums">
+          {clamped}%
         </span>
       )}
     </div>

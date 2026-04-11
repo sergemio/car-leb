@@ -60,40 +60,54 @@ export function PhotoSlotGrid({ onSlotsChange }: PhotoSlotGridProps) {
   const requiredSlots = slots.filter(s => s.required);
   const optionalSlots = slots.filter(s => !s.required);
 
+  const filledRequired = requiredSlots.filter((s) => s.preview).length;
+
   return (
-    <div className="space-y-6">
+    <div className="space-y-10">
       <div>
-        <h3 className="text-sm font-semibold text-gray-800 mb-3">
-          Required Photos <span className="text-gray-400 font-normal">({requiredSlots.filter(s => s.preview).length}/{requiredSlots.length})</span>
-        </h3>
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-          {slots.map((slot, i) =>
-            slot.required && (
-              <PhotoSlot
-                key={slot.slot}
-                slot={slot}
-                onFileSelect={(file) => handleFileSelect(i, file)}
-                onRemove={() => handleRemove(i)}
-              />
-            )
+        <div className="flex items-baseline justify-between mb-5">
+          <h3 className="font-mono text-[10px] uppercase tracking-[0.14em] text-[var(--gray-4)]">
+            — Required photos
+          </h3>
+          <span className="font-mono text-[11px] tabular-nums text-[var(--ink)]">
+            {filledRequired.toString().padStart(2, '0')} / {requiredSlots.length.toString().padStart(2, '0')}
+          </span>
+        </div>
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+          {slots.map(
+            (slot, i) =>
+              slot.required && (
+                <PhotoSlot
+                  key={slot.slot}
+                  slot={slot}
+                  onFileSelect={(file) => handleFileSelect(i, file)}
+                  onRemove={() => handleRemove(i)}
+                />
+              )
           )}
         </div>
       </div>
 
       <div>
-        <h3 className="text-sm font-semibold text-gray-800 mb-3">
-          Bonus Photos <span className="text-gray-400 font-normal">(optional — boosts your score)</span>
-        </h3>
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-          {slots.map((slot, i) =>
-            !slot.required && (
-              <PhotoSlot
-                key={slot.slot}
-                slot={slot}
-                onFileSelect={(file) => handleFileSelect(i, file)}
-                onRemove={() => handleRemove(i)}
-              />
-            )
+        <div className="flex items-baseline justify-between mb-5">
+          <h3 className="font-mono text-[10px] uppercase tracking-[0.14em] text-[var(--gray-4)]">
+            — Bonus photos
+          </h3>
+          <span className="font-mono text-[10px] text-[var(--gray-3)]">
+            Optional — boosts your score
+          </span>
+        </div>
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+          {slots.map(
+            (slot, i) =>
+              !slot.required && (
+                <PhotoSlot
+                  key={slot.slot}
+                  slot={slot}
+                  onFileSelect={(file) => handleFileSelect(i, file)}
+                  onRemove={() => handleRemove(i)}
+                />
+              )
           )}
         </div>
       </div>

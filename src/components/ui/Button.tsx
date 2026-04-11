@@ -1,5 +1,8 @@
+// Base button — pill shape, invert on hover
+// See design-language.md §8 "Button"
+
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: 'primary' | 'secondary' | 'outline';
+  variant?: 'primary' | 'outline' | 'ghost';
   size?: 'sm' | 'md' | 'lg';
   loading?: boolean;
 }
@@ -13,35 +16,40 @@ export function Button({
   disabled,
   ...props
 }: ButtonProps) {
-  const baseStyles = 'font-medium rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed';
+  const base =
+    'inline-flex items-center justify-center gap-2 rounded-full font-medium transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ink)] focus-visible:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed border';
 
   const variants = {
-    primary: 'bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-500',
-    secondary: 'bg-gray-100 text-gray-900 hover:bg-gray-200 focus:ring-gray-500',
-    outline: 'border-2 border-gray-300 text-gray-700 hover:border-gray-400 focus:ring-gray-500',
+    // Primary — black pill, inverts to white/black outline on hover
+    primary:
+      'border-[var(--ink)] bg-[var(--ink)] text-white hover:bg-white hover:text-[var(--ink)]',
+    // Outline — transparent with black border, fills to black on hover
+    outline:
+      'border-[var(--ink)] bg-transparent text-[var(--ink)] hover:bg-[var(--ink)] hover:text-white',
+    // Ghost — no border, muted text, fills bg on hover
+    ghost:
+      'border-transparent bg-transparent text-[var(--gray-4)] hover:text-[var(--ink)] hover:bg-[var(--gray-1)]',
   };
 
   const sizes = {
-    sm: 'px-3 py-1.5 text-sm',
-    md: 'px-4 py-2 text-base',
-    lg: 'px-6 py-3 text-lg',
+    sm: 'px-4 h-9 text-[13px]',
+    md: 'px-5 h-11 text-sm',
+    lg: 'px-6 h-12 text-base',
   };
 
   return (
     <button
-      className={`${baseStyles} ${variants[variant]} ${sizes[size]} ${className}`}
+      className={`${base} ${variants[variant]} ${sizes[size]} ${className}`}
       disabled={disabled || loading}
       {...props}
     >
-      {loading ? (
-        <span className="flex items-center gap-2">
-          <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24">
-            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
-            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-          </svg>
-          {children}
-        </span>
-      ) : children}
+      {loading && (
+        <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24">
+          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+        </svg>
+      )}
+      {children}
     </button>
   );
 }

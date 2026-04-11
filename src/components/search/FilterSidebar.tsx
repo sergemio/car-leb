@@ -19,10 +19,16 @@ export function FilterSidebar({ filters, onChange, onReset }: FilterSidebarProps
   const availableModels = filters.make ? (CAR_MAKES[filters.make] || []) : [];
 
   return (
-    <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <h3 className="font-semibold text-gray-800">Filters</h3>
-        <button onClick={onReset} className="text-sm text-blue-600 hover:underline">
+    <div className="space-y-5">
+      <div className="flex items-center justify-between pb-3 border-b border-[var(--gray-2)]">
+        <h3 className="font-mono text-[10px] uppercase tracking-[0.14em] text-[var(--gray-4)]">
+          — Filters
+        </h3>
+        <button
+          type="button"
+          onClick={onReset}
+          className="font-mono text-[10px] uppercase tracking-[0.1em] text-[var(--ink)] hover:text-[var(--gray-4)] transition-colors"
+        >
           Reset
         </button>
       </div>

@@ -135,33 +135,62 @@ export function ListingWizard() {
     }
   }
 
+  const STEP_LABELS = ['Details', 'Photos', 'Review'];
+
   return (
     <div className="max-w-2xl mx-auto">
-      {/* Progress indicator */}
-      <div className="flex items-center gap-2 mb-8">
-        {[1, 2, 3].map(s => (
-          <div key={s} className="flex items-center gap-2 flex-1">
-            <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
-              step >= s ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-500'
-            }`}>
-              {s}
+      {/* Eyebrow */}
+      <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-[var(--gray-4)] mb-4 flex items-center gap-3">
+        <span className="w-7 h-px bg-[var(--ink)]" />
+        Sell your car
+      </div>
+      <h1 className="font-display text-[44px] font-normal leading-[0.95] tracking-[-0.03em] text-[var(--ink)] mb-10">
+        List a <em className="italic font-light text-[var(--gray-3)]">car</em>.
+      </h1>
+
+      {/* Progress indicator — minimal numbered steps */}
+      <div className="flex items-center gap-3 mb-10">
+        {[1, 2, 3].map((s, i) => {
+          const active = step >= s;
+          return (
+            <div key={s} className="flex items-center gap-3 flex-1">
+              <div
+                className={`w-8 h-8 rounded-full flex items-center justify-center font-mono text-[11px] font-bold border transition-colors ${
+                  active
+                    ? 'bg-[var(--ink)] text-white border-[var(--ink)]'
+                    : 'bg-white text-[var(--gray-3)] border-[var(--gray-2)]'
+                }`}
+              >
+                {s.toString().padStart(2, '0')}
+              </div>
+              <span
+                className={`font-mono text-[11px] uppercase tracking-[0.12em] hidden sm:inline transition-colors ${
+                  active ? 'text-[var(--ink)]' : 'text-[var(--gray-3)]'
+                }`}
+              >
+                {STEP_LABELS[i]}
+              </span>
+              {s < 3 && (
+                <div
+                  className={`flex-1 h-px transition-colors ${
+                    step > s ? 'bg-[var(--ink)]' : 'bg-[var(--gray-2)]'
+                  }`}
+                />
+              )}
             </div>
-            <span className="text-sm text-gray-600 hidden sm:inline">
-              {s === 1 ? 'Details' : s === 2 ? 'Photos' : 'Review'}
-            </span>
-            {s < 3 && <div className={`flex-1 h-0.5 ${step > s ? 'bg-blue-600' : 'bg-gray-200'}`} />}
-          </div>
-        ))}
+          );
+        })}
       </div>
 
-      <div className="mb-6">
+      {/* Live completeness score */}
+      <div className="mb-10">
         <CompletenessScore score={score} tier={tier} />
       </div>
 
       {/* Step 1: Car Details */}
       {step === 1 && (
-        <div className="space-y-4">
-          <h2 className="text-xl font-bold">Car Details</h2>
+        <div className="space-y-6">
+          <h2 className="font-display text-[24px] font-medium text-[var(--ink)]">Car details</h2>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <Select
@@ -260,46 +289,50 @@ export function ListingWizard() {
             />
           </div>
 
-          <div className="flex justify-end pt-4">
-            <Button onClick={() => setStep(2)}>Next: Photos</Button>
+          <div className="flex justify-end pt-6 border-t border-[var(--gray-2)]">
+            <Button onClick={() => setStep(2)}>Next: Photos →</Button>
           </div>
         </div>
       )}
 
       {/* Step 2: Photos */}
       {step === 2 && (
-        <div className="space-y-4">
-          <h2 className="text-xl font-bold">Photos</h2>
-          <p className="text-sm text-gray-600">
-            Upload photos from specific angles. The more slots you fill, the higher your listing ranks.
-          </p>
+        <div className="space-y-6">
+          <div>
+            <h2 className="font-display text-[24px] font-medium text-[var(--ink)]">Photos</h2>
+            <p className="text-[13px] text-[var(--gray-4)] mt-2 leading-relaxed">
+              Upload photos from specific angles. The more slots you fill, the higher your listing ranks.
+            </p>
+          </div>
 
           <PhotoSlotGrid onSlotsChange={handleSlotsChange} />
 
-          <div className="flex justify-between pt-4">
-            <Button variant="outline" onClick={() => setStep(1)}>Back</Button>
-            <Button onClick={() => setStep(3)}>Next: Review</Button>
+          <div className="flex justify-between pt-6 border-t border-[var(--gray-2)]">
+            <Button variant="outline" onClick={() => setStep(1)}>
+              ← Back
+            </Button>
+            <Button onClick={() => setStep(3)}>Next: Review →</Button>
           </div>
         </div>
       )}
 
       {/* Step 3: Contact & Review */}
       {step === 3 && (
-        <div className="space-y-4">
-          <h2 className="text-xl font-bold">Contact & Review</h2>
+        <div className="space-y-6">
+          <h2 className="font-display text-[24px] font-medium text-[var(--ink)]">Contact & review</h2>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <Input
               label="Your Name"
               placeholder="e.g. Ali"
               value={form.seller_name}
-              onChange={e => updateField('seller_name', e.target.value)}
+              onChange={(e) => updateField('seller_name', e.target.value)}
             />
             <Input
               label="Phone Number"
               placeholder="e.g. +961 71 123 456"
               value={form.seller_phone}
-              onChange={e => updateField('seller_phone', e.target.value)}
+              onChange={(e) => updateField('seller_phone', e.target.value)}
             />
           </div>
 
@@ -307,43 +340,64 @@ export function ListingWizard() {
             label="WhatsApp Number (if different)"
             placeholder="e.g. +961 71 123 456"
             value={form.seller_whatsapp}
-            onChange={e => updateField('seller_whatsapp', e.target.value)}
+            onChange={(e) => updateField('seller_whatsapp', e.target.value)}
           />
 
-          <div className="flex flex-col gap-1">
-            <label className="text-sm font-medium text-gray-700">Description (optional)</label>
+          <div className="flex flex-col gap-2">
+            <label className="font-mono text-[10px] uppercase tracking-[0.14em] text-[var(--gray-4)]">
+              Description (optional)
+            </label>
             <textarea
-              className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent min-h-[100px]"
+              className="px-4 py-3 bg-white border border-[var(--gray-2)] rounded-xl text-[14px] text-[var(--ink)] placeholder:text-[var(--gray-3)] outline-none transition-colors focus:border-[var(--ink)] min-h-[120px] resize-y"
               placeholder="Tell buyers about your car — service history, modifications, reason for selling..."
               value={form.description}
-              onChange={e => updateField('description', e.target.value)}
+              onChange={(e) => updateField('description', e.target.value)}
             />
           </div>
 
-          <div className="bg-gray-50 rounded-xl p-4 space-y-2">
-            <h3 className="font-semibold text-gray-800">Summary</h3>
-            <p className="text-sm text-gray-600">
-              {form.year} {form.make} {form.model} — ${form.price_usd?.toLocaleString()} — {form.mileage_km?.toLocaleString()} km
-            </p>
-            <p className="text-sm text-gray-600">
-              {form.fuel_type} / {form.transmission} / {form.condition}
-            </p>
-            <p className="text-sm text-gray-600">
-              {form.location_city}, {form.location_region}
-            </p>
-            <p className="text-sm text-gray-600">
-              Photos: {photoSlots.filter(s => s.preview).length} uploaded
-            </p>
+          {/* Summary card */}
+          <div className="bg-[var(--gray-1)] border border-[var(--gray-2)] rounded-2xl p-6 space-y-3">
+            <div className="font-mono text-[10px] uppercase tracking-[0.14em] text-[var(--gray-4)]">
+              — Summary
+            </div>
+            <h3 className="font-display text-[22px] font-medium text-[var(--ink)] leading-tight">
+              {form.year} {form.make} {form.model}
+            </h3>
+            <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-[13px] text-[var(--gray-4)]">
+              <span className="font-mono text-[var(--ink)]">
+                ${form.price_usd?.toLocaleString() ?? '—'}
+              </span>
+              <span className="text-[var(--gray-3)]">·</span>
+              <span className="font-mono">{form.mileage_km?.toLocaleString() ?? '—'} km</span>
+              <span className="text-[var(--gray-3)]">·</span>
+              <span className="capitalize">{form.fuel_type || '—'}</span>
+              <span className="text-[var(--gray-3)]">·</span>
+              <span className="capitalize">{form.transmission || '—'}</span>
+              <span className="text-[var(--gray-3)]">·</span>
+              <span className="capitalize">{form.condition || '—'}</span>
+            </div>
+            <div className="text-[13px] text-[var(--gray-4)]">
+              {form.location_city && form.location_region
+                ? `${form.location_city}, ${form.location_region}`
+                : 'Location not set'}
+            </div>
+            <div className="font-mono text-[10px] uppercase tracking-[0.1em] text-[var(--gray-4)] pt-2 border-t border-[var(--gray-2)]">
+              {photoSlots.filter((s) => s.preview).length} photos uploaded
+            </div>
           </div>
 
           {error && (
-            <div className="bg-red-50 text-red-700 p-3 rounded-lg text-sm">{error}</div>
+            <div className="border border-[var(--lb-red)] bg-white rounded-xl p-4 text-[13px] text-[var(--lb-red)]">
+              {error}
+            </div>
           )}
 
-          <div className="flex justify-between pt-4">
-            <Button variant="outline" onClick={() => setStep(2)}>Back</Button>
+          <div className="flex justify-between pt-6 border-t border-[var(--gray-2)]">
+            <Button variant="outline" onClick={() => setStep(2)}>
+              ← Back
+            </Button>
             <Button onClick={handleSubmit} loading={submitting}>
-              Publish Listing
+              Publish listing
             </Button>
           </div>
         </div>
