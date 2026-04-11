@@ -24,12 +24,21 @@ export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
 
+  // /sell has a sticky quality rev-counter right under the navbar,
+  // so the scroll-to-pills (transparent bg) trick breaks visual coherence.
+  // Force the solid navbar on that page.
+  const solidOnly = pathname === '/sell';
+
   useEffect(() => {
+    if (solidOnly) {
+      setScrolled(false);
+      return;
+    }
     const onScroll = () => setScrolled(window.scrollY > 24);
     onScroll();
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
-  }, []);
+  }, [solidOnly]);
 
   const navClass = `sticky top-0 z-50 transition-[background,border-color,backdrop-filter] duration-[400ms] ${
     scrolled
