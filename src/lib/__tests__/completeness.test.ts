@@ -13,7 +13,8 @@ describe('calculateCompleteness', () => {
     make: 'BMW', model: '3 Series', year: 2020, price_usd: 25000,
     mileage_km: 50000, fuel_type: 'petrol' as const, transmission: 'automatic' as const,
     condition: 'used' as const, location_city: 'Beirut', location_region: 'Beirut',
-    description: 'Well maintained car with full service history.',
+    // 92 chars — lands in the top description bracket (>=80 → 10 pts)
+    description: 'Well maintained car with full service history. One owner. Garage kept. No accidents.',
     seller_name: 'Serge', seller_phone: '+9613000000',
   };
 

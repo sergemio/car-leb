@@ -53,14 +53,20 @@ export function calculateCompleteness(
   const filledRequired = requiredSlots.filter(s => filledSlots.includes(s.slot));
   score += Math.round((filledRequired.length / requiredSlots.length) * 45);
 
-  // Seller contact: 10 points total (name + phone, 5 each)
+  // Seller contact: 10 points total (name + phone, 5 each).
+  // Low thresholds so the rev counter reacts as soon as the user starts typing.
   if (fields.seller_name && fields.seller_name.trim().length >= 2) score += 5;
-  if (fields.seller_phone && fields.seller_phone.trim().length >= 6) score += 5;
+  if (fields.seller_phone && fields.seller_phone.trim().length >= 3) score += 5;
 
-  // Description: 10 points if provided (at least 10 chars)
-  if (fields.description && fields.description.length >= 10) {
-    score += 10;
-  }
+  // Description: progressive, up to 10 points.
+  //   any text (>=1 char)  → 4 pts
+  //   >=30 chars           → 7 pts
+  //   >=80 chars           → 10 pts
+  // Rewards the user immediately for starting to type instead of being a binary gate.
+  const descLen = fields.description?.trim().length ?? 0;
+  if (descLen >= 80)       score += 10;
+  else if (descLen >= 30)  score += 7;
+  else if (descLen >= 1)   score += 4;
 
   // Optional photo bonus: up to 10 points
   const optionalSlots = PHOTO_SLOTS.filter(s => !s.required);
