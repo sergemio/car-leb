@@ -5,7 +5,7 @@ export type FuelType = 'petrol' | 'diesel' | 'hybrid' | 'electric';
 export type Transmission = 'automatic' | 'manual';
 export type Condition = 'new' | 'used' | 'salvage';
 export type ListingStatus = 'draft' | 'active' | 'sold' | 'expired';
-export type QualityTier = 'bronze' | 'silver' | 'gold';
+export type QualityTier = 'poor' | 'fair' | 'good' | 'prime';
 
 export type PhotoSlotName =
   | 'front' | 'rear' | 'left_side' | 'right_side'

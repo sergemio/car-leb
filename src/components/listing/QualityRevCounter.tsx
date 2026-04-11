@@ -39,9 +39,10 @@ const ZONE_CLASSES: Record<ReturnType<typeof zoneFor>, string> = {
 };
 
 const TIER_LABELS: Record<QualityTier, string> = {
-  bronze: 'Bronze',
-  silver: 'Silver',
-  gold:   'Gold',
+  poor:  '🔧 Poor',
+  fair:  '⚙️ Fair',
+  good:  '🏁 Good',
+  prime: '🏆 Prime',
 };
 
 export function QualityRevCounter({ score, tier }: QualityRevCounterProps) {

@@ -72,8 +72,12 @@ export function calculateCompleteness(
   // Cap at 100
   score = Math.min(score, 100);
 
-  // Derive tier
-  const tier: QualityTier = score >= 80 ? 'gold' : score >= 50 ? 'silver' : 'bronze';
+  // Derive tier — 4 steps aligned with the rev counter color zones
+  const tier: QualityTier =
+    score >= 80 ? 'prime' :
+    score >= 60 ? 'good' :
+    score >= 40 ? 'fair' :
+    'poor';
 
   return { score, tier };
 }

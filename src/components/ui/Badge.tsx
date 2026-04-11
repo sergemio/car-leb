@@ -2,7 +2,7 @@
 // Used for quality tiers and generic info chips
 
 interface BadgeProps {
-  variant: 'bronze' | 'silver' | 'gold' | 'info';
+  variant: 'poor' | 'fair' | 'good' | 'prime' | 'info';
   children: React.ReactNode;
   className?: string;
 }

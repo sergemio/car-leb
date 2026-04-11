@@ -37,7 +37,13 @@ export default async function ListingDetailPage({ params }: Props) {
       )}`
     : null;
 
-  const tierLabel = l.quality_tier.charAt(0).toUpperCase() + l.quality_tier.slice(1);
+  const TIER_LABELS: Record<typeof l.quality_tier, string> = {
+    poor:  '🔧 Poor',
+    fair:  '⚙️ Fair',
+    good:  '🏁 Good',
+    prime: '🏆 Prime',
+  };
+  const tierLabel = TIER_LABELS[l.quality_tier];
 
   return (
     <div className="max-w-[1280px] mx-auto px-6 lg:px-8 py-12 lg:py-16">
@@ -64,7 +70,7 @@ export default async function ListingDetailPage({ params }: Props) {
               ${l.price_usd.toLocaleString()}
             </div>
           </div>
-          <Badge variant={l.quality_tier}>{tierLabel} listing</Badge>
+          <Badge variant={l.quality_tier}>{tierLabel}</Badge>
         </div>
       </div>
 
