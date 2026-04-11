@@ -112,7 +112,7 @@ export function PhotoGallery({ photos, title }: PhotoGalleryProps) {
               <img
                 src={`/sketches/guides/${slot.slot}.png`}
                 alt={`${slot.label} reference`}
-                className="absolute inset-0 w-full h-full object-contain p-2"
+                className="absolute inset-0 w-full h-full object-cover"
               />
               <span className="absolute bottom-2 left-1/2 -translate-x-1/2 font-mono text-[10px] uppercase tracking-[0.08em] text-[var(--gray-3)] bg-white/80 px-2 py-0.5 rounded-full">
                 {slot.label}
