@@ -19,13 +19,13 @@ export function Hero({ featuredListings, totalListings }: HeroProps) {
 
   return (
     <section className="border-b border-[var(--gray-2)]">
-      <div className="max-w-[1280px] mx-auto px-6 lg:px-8 pt-20 lg:pt-24 pb-16">
+      <div className="max-w-[1280px] mx-auto px-6 lg:px-8 pt-14 lg:pt-16 pb-12">
         {/* Two-column grid: branding left, featured right */}
         <div className="lg:grid lg:grid-cols-2 lg:gap-12">
           {/* Left — branding */}
           <div>
             {/* Eyebrow */}
-            <div className="font-mono text-[11px] uppercase tracking-[0.2em] text-[var(--gray-4)] mb-10 flex items-center gap-3 reveal reveal-1">
+            <div className="font-mono text-[11px] uppercase tracking-[0.2em] text-[var(--gray-4)] mb-6 flex items-center gap-3 reveal reveal-1">
               <span className="w-7 h-px bg-[var(--ink)]" />
               LEBANON · EST. 2026
             </div>
@@ -50,13 +50,13 @@ export function Hero({ featuredListings, totalListings }: HeroProps) {
             </div>
 
             {/* Subtitle */}
-            <p className="text-[17px] leading-[1.55] text-[var(--gray-4)] max-w-[520px] mt-8 reveal reveal-3">
+            <p className="text-[17px] leading-[1.55] text-[var(--gray-4)] max-w-[520px] mt-6 reveal reveal-3">
               A quiet marketplace for quality listings. Structured photos, fair prices, no chaos.
               Built for buyers who want to see the full picture.
             </p>
 
             {/* CTAs */}
-            <div className="flex flex-wrap gap-3 mt-10 reveal reveal-4">
+            <div className="flex flex-wrap gap-3 mt-8 reveal reveal-4">
               <Link
                 href="/listings"
                 className="inline-flex items-center gap-2 px-6 h-11 rounded-full border border-[var(--ink)] bg-[var(--ink)] text-white text-sm font-medium hover:shadow-[4px_4px_0_var(--ink)] hover:-translate-x-[2px] hover:-translate-y-[2px] transition-all duration-200"
@@ -130,28 +130,6 @@ export function Hero({ featuredListings, totalListings }: HeroProps) {
           </div>
         </div>
 
-        {/* Ruler — engineering graduation marker, full width below both columns */}
-        <div className="mt-16 pb-6 reveal reveal-5">
-          <div className="flex items-end gap-0 h-8 overflow-hidden">
-            {Array.from({ length: 61 }).map((_, i) => {
-              const isXL = i % 10 === 0;
-              const isLG = i % 5 === 0 && !isXL;
-              const height = isXL ? 22 : isLG ? 16 : 8;
-              return (
-                <span
-                  key={i}
-                  className="flex-1 border-l border-[var(--ink)]"
-                  style={{ height }}
-                />
-              );
-            })}
-          </div>
-          <div className="flex justify-between mt-2 font-mono text-[10px] uppercase tracking-[0.14em]">
-            <span className="text-[var(--ink)]">00</span>
-            <span className="text-[var(--gray-4)]">Scale 1:1</span>
-            <span className="text-[var(--ink)]">{totalListings} listings</span>
-          </div>
-        </div>
       </div>
     </section>
   );
