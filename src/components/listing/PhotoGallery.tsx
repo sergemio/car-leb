@@ -78,7 +78,7 @@ export function PhotoGallery({ photos, title }: PhotoGalleryProps) {
           <img
             src={frontPhoto.url}
             alt={title}
-            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.02]"
+            className="w-full h-full object-contain transition-transform duration-500 group-hover:scale-[1.02]"
           />
         </button>
       )}
@@ -101,7 +101,7 @@ export function PhotoGallery({ photos, title }: PhotoGalleryProps) {
                 <img
                   src={photo.url}
                   alt={slot.label}
-                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+                  className="w-full h-full object-contain transition-transform duration-500 group-hover:scale-[1.03]"
                   loading="lazy"
                 />
               </button>
