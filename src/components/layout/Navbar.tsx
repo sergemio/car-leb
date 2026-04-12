@@ -178,9 +178,9 @@ export function Navbar() {
         </div>
       </div>
 
-      {/* Mobile menu — fullscreen overlay */}
+      {/* Mobile menu — fullscreen overlay, covers header too */}
       <div
-        className={`lg:hidden fixed inset-0 top-[72px] z-40 transition-opacity duration-300 ease-out ${
+        className={`lg:hidden fixed inset-0 z-[60] transition-opacity duration-300 ease-out ${
           mobileOpen
             ? 'opacity-100 pointer-events-auto'
             : 'opacity-0 pointer-events-none'
@@ -191,12 +191,26 @@ export function Navbar() {
           className="absolute inset-0 bg-black/20 backdrop-blur-sm"
           onClick={() => setMobileOpen(false)}
         />
-        {/* Menu panel — slides down */}
+        {/* Menu panel — slides down, includes its own header */}
         <div
           className={`relative bg-white shadow-[0_20px_40px_-12px_rgba(10,10,10,0.15)] transition-transform duration-300 ease-out ${
             mobileOpen ? 'translate-y-0' : '-translate-y-4'
           }`}
         >
+          {/* Menu header with logo + close */}
+          <div className="flex items-center justify-between px-6 h-[72px] border-b border-[var(--gray-2)]">
+            <Logo />
+            <button
+              type="button"
+              onClick={() => setMobileOpen(false)}
+              className="flex items-center justify-center w-11 h-11 rounded-full border border-[var(--gray-2)] bg-white shadow-[0_4px_12px_-4px_rgba(10,10,10,0.12)]"
+              aria-label="Close menu"
+            >
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
           <div className="px-6 py-4 space-y-1">
             {NAV_LINKS.map((link, i) => (
               <Link
