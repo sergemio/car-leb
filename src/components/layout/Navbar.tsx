@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Logo } from './Logo';
 
 // Primary navigation
@@ -19,10 +19,28 @@ const NAV_LINKS = [
   { href: '#about', label: 'About' },
 ];
 
+// Spotlight glow CSS variables for the nav links pill
+const GLOW_VARS: React.CSSProperties & Record<string, string | number> = {
+  '--base': 142,
+  '--spread': 0,
+  '--radius': 9999,
+  '--border': 2,
+  '--backdrop': 'hsl(0 0% 100%)',
+  '--backup-border': 'hsl(0 0% 90%)',
+  '--size': 200,
+  '--outer': 1,
+  '--saturation': 76,
+  '--lightness': 50,
+  '--bg-spot-opacity': 0.08,
+  '--border-spot-opacity': 1,
+  '--border-light-opacity': 0.5,
+};
+
 export function Navbar() {
   const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const glowRef = useRef<HTMLDivElement>(null);
 
   // /sell has a sticky quality rev-counter right under the navbar,
   // so the scroll-to-pills (transparent bg) trick breaks visual coherence.
@@ -39,6 +57,28 @@ export function Navbar() {
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
   }, [solidOnly]);
+
+  // Spotlight glow pointer tracking
+  useEffect(() => {
+    const onPointerMove = (e: PointerEvent) => {
+      const el = glowRef.current;
+      if (!el) return;
+      el.style.setProperty('--x', e.clientX.toFixed(2));
+      el.style.setProperty('--xp', (e.clientX / window.innerWidth).toFixed(2));
+      el.style.setProperty('--y', e.clientY.toFixed(2));
+      el.style.setProperty('--yp', (e.clientY / window.innerHeight).toFixed(2));
+      // Also set on the inner glow child
+      const inner = el.querySelector<HTMLElement>('[data-glow]');
+      if (inner) {
+        inner.style.setProperty('--x', e.clientX.toFixed(2));
+        inner.style.setProperty('--xp', (e.clientX / window.innerWidth).toFixed(2));
+        inner.style.setProperty('--y', e.clientY.toFixed(2));
+        inner.style.setProperty('--yp', (e.clientY / window.innerHeight).toFixed(2));
+      }
+    };
+    document.addEventListener('pointermove', onPointerMove);
+    return () => document.removeEventListener('pointermove', onPointerMove);
+  }, []);
 
   const navClass = `sticky top-0 z-50 transition-[background,border-color,backdrop-filter] duration-[400ms] ${
     scrolled
@@ -67,20 +107,23 @@ export function Navbar() {
             <Logo />
           </div>
 
-          {/* Desktop nav links pill */}
+          {/* Desktop nav links pill — with spotlight glow */}
           <div
-            style={pillEasing}
-            className={`${pillBase} hidden lg:flex items-center gap-8 rounded-full px-6 py-3 border ${
+            ref={glowRef}
+            data-glow
+            style={{ ...pillEasing, ...GLOW_VARS, borderRadius: '9999px' } as React.CSSProperties}
+            className={`${pillBase} hidden lg:flex items-center gap-8 rounded-full px-6 py-3 ${
               scrolled
-                ? 'bg-white border-[var(--gray-2)] shadow-[0_10px_28px_-12px_rgba(10,10,10,0.22)] translate-y-0.5'
-                : 'bg-transparent border-transparent'
+                ? 'shadow-[0_10px_28px_-12px_rgba(10,10,10,0.22)] translate-y-0.5'
+                : ''
             }`}
           >
+            <div data-glow />
             {NAV_LINKS.map((link) => (
               <Link
                 key={link.label}
                 href={link.href}
-                className={`text-sm transition-colors duration-200 ${
+                className={`relative z-[1] text-sm transition-colors duration-200 ${
                   pathname === link.href
                     ? 'text-[var(--ink)] font-medium'
                     : 'text-[var(--gray-4)] hover:text-[var(--ink)]'
