@@ -98,7 +98,7 @@ export function Navbar() {
           {/* Logo pill */}
           <div
             style={pillEasing}
-            className={`${pillBase} shrink-0 rounded-full px-5 py-2.5 border ${
+            className={`${pillBase} shrink-0 rounded-full px-5 h-11 flex items-center border ${
               scrolled
                 ? 'bg-white border-[var(--gray-2)] shadow-[0_10px_28px_-12px_rgba(10,10,10,0.22)] translate-y-0.5'
                 : 'bg-transparent border-transparent'
@@ -112,7 +112,7 @@ export function Navbar() {
             ref={glowRef}
             data-glow
             style={{ ...pillEasing, ...GLOW_VARS, borderRadius: '9999px' } as React.CSSProperties}
-            className={`${pillBase} hidden lg:flex items-center gap-8 rounded-full px-6 py-3 ${
+            className={`${pillBase} hidden lg:flex items-center gap-8 rounded-full px-6 h-11 ${
               scrolled
                 ? 'shadow-[0_10px_28px_-12px_rgba(10,10,10,0.22)] translate-y-0.5'
                 : ''
@@ -139,7 +139,7 @@ export function Navbar() {
             <button
               type="button"
               style={pillEasing}
-              className={`${pillBase} hidden md:inline-flex items-center text-sm text-[var(--gray-4)] hover:text-[var(--ink)] rounded-full px-4 py-2.5 border ${
+              className={`${pillBase} hidden md:inline-flex items-center text-sm text-[var(--gray-4)] hover:text-[var(--ink)] rounded-full px-5 h-11 border ${
                 scrolled
                   ? 'bg-white border-[var(--gray-2)] shadow-[0_10px_28px_-12px_rgba(10,10,10,0.22)] translate-y-0.5'
                   : 'bg-transparent border-transparent'
