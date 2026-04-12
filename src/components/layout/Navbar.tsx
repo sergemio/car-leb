@@ -158,11 +158,12 @@ export function Navbar() {
               Sell your car
             </Link>
 
-            {/* Mobile menu toggle */}
+            {/* Mobile menu toggle — pill style matching other nav elements */}
             <button
               type="button"
               onClick={() => setMobileOpen(!mobileOpen)}
-              className="lg:hidden p-2 text-[var(--ink)]"
+              style={pillEasing}
+              className={`${pillBase} lg:hidden flex items-center justify-center w-11 h-11 rounded-full border bg-white border-[var(--gray-2)] shadow-[0_4px_12px_-4px_rgba(10,10,10,0.12)]`}
               aria-label="Menu"
             >
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -175,22 +176,53 @@ export function Navbar() {
             </button>
           </div>
         </div>
+      </div>
 
-        {/* Mobile menu */}
-        {mobileOpen && (
-          <div className="lg:hidden border-t border-[var(--gray-2)] py-4 space-y-1 bg-white">
-            {NAV_LINKS.map((link) => (
+      {/* Mobile menu — fullscreen overlay */}
+      <div
+        className={`lg:hidden fixed inset-0 top-[72px] z-40 transition-opacity duration-300 ease-out ${
+          mobileOpen
+            ? 'opacity-100 pointer-events-auto'
+            : 'opacity-0 pointer-events-none'
+        }`}
+      >
+        {/* Backdrop */}
+        <div
+          className="absolute inset-0 bg-black/20 backdrop-blur-sm"
+          onClick={() => setMobileOpen(false)}
+        />
+        {/* Menu panel — slides down */}
+        <div
+          className={`relative bg-white shadow-[0_20px_40px_-12px_rgba(10,10,10,0.15)] transition-transform duration-300 ease-out ${
+            mobileOpen ? 'translate-y-0' : '-translate-y-4'
+          }`}
+        >
+          <div className="px-6 py-4 space-y-1">
+            {NAV_LINKS.map((link, i) => (
               <Link
                 key={link.label}
                 href={link.href}
                 onClick={() => setMobileOpen(false)}
-                className="block px-3 py-3 text-base font-medium text-[var(--ink)] hover:bg-[var(--gray-1)] rounded-lg"
+                className="block px-4 py-4 text-lg font-medium text-[var(--ink)] hover:bg-[var(--gray-1)] rounded-xl transition-colors"
+                style={{
+                  opacity: mobileOpen ? 1 : 0,
+                  transform: mobileOpen ? 'translateY(0)' : 'translateY(-8px)',
+                  transition: `opacity 300ms ease-out ${i * 50}ms, transform 300ms ease-out ${i * 50}ms, background-color 200ms`,
+                }}
               >
                 {link.label}
               </Link>
             ))}
           </div>
-        )}
+          <div className="px-6 pb-6 pt-2 border-t border-[var(--gray-2)]">
+            <button
+              onClick={() => setMobileOpen(false)}
+              className="w-full py-3 text-sm text-[var(--gray-4)] hover:text-[var(--ink)] transition-colors"
+            >
+              Sign in
+            </button>
+          </div>
+        </div>
       </div>
     </nav>
   );
