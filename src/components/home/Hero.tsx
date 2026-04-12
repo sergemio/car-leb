@@ -55,21 +55,32 @@ export function Hero({ featuredListings, totalListings }: HeroProps) {
               Built for buyers who want to see the full picture.
             </p>
 
-            {/* CTAs */}
+            {/* CTAs — liquid glass buttons */}
             <div className="flex flex-wrap gap-3 mt-8 reveal reveal-4">
-              <Link
-                href="/listings"
-                className="inline-flex items-center gap-2 px-6 h-11 rounded-full border border-[var(--ink)] bg-[var(--ink)] text-white text-sm font-medium hover:shadow-[4px_4px_0_var(--ink)] hover:-translate-x-[2px] hover:-translate-y-[2px] transition-all duration-200"
-              >
-                Browse cars →
+              <Link href="/listings" className="btn-liquid px-7 h-11 rounded-full text-sm font-medium text-[var(--ink)]">
+                <div className="btn-liquid__glass" />
+                <div className="btn-liquid__blur" />
+                <span className="relative z-10 pointer-events-none">Browse cars →</span>
               </Link>
-              <Link
-                href="/sell"
-                className="inline-flex items-center gap-2 px-6 h-11 rounded-full border border-[var(--ink)] bg-transparent text-[var(--ink)] text-sm font-medium hover:bg-[var(--gray-1)] transition-colors duration-200"
-              >
-                Sell your car
+              <Link href="/sell" className="btn-liquid px-7 h-11 rounded-full text-sm font-medium text-[var(--ink)]">
+                <div className="btn-liquid__glass" />
+                <div className="btn-liquid__blur" />
+                <span className="relative z-10 pointer-events-none">Sell your car</span>
               </Link>
             </div>
+
+            {/* SVG filter for liquid glass effect */}
+            <svg className="hidden">
+              <defs>
+                <filter id="container-glass" x="0%" y="0%" width="100%" height="100%" colorInterpolationFilters="sRGB">
+                  <feTurbulence type="fractalNoise" baseFrequency="0.05 0.05" numOctaves="1" seed="1" result="turbulence" />
+                  <feGaussianBlur in="turbulence" stdDeviation="2" result="blurredNoise" />
+                  <feDisplacementMap in="SourceGraphic" in2="blurredNoise" scale="70" xChannelSelector="R" yChannelSelector="B" result="displaced" />
+                  <feGaussianBlur in="displaced" stdDeviation="4" result="finalBlur" />
+                  <feComposite in="finalBlur" in2="finalBlur" operator="over" />
+                </filter>
+              </defs>
+            </svg>
           </div>
 
           {/* Right — featured listings */}

@@ -128,3 +128,44 @@ html, body {
 /* Hide scrollbar utility */
 .no-scrollbar::-webkit-scrollbar { display: none; }
 .no-scrollbar { scrollbar-width: none; }
+
+/* Liquid glass button */
+.btn-liquid {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  transition: transform 0.3s;
+}
+.btn-liquid:hover { transform: scale(1.05); }
+
+.btn-liquid__glass {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  border-radius: 9999px;
+  box-shadow:
+    0 0 6px rgba(0,0,0,0.03),
+    0 2px 6px rgba(0,0,0,0.08),
+    inset 3px 3px 0.5px -3px rgba(0,0,0,0.9),
+    inset -3px -3px 0.5px -3px rgba(0,0,0,0.85),
+    inset 1px 1px 1px -0.5px rgba(0,0,0,0.6),
+    inset -1px -1px 1px -0.5px rgba(0,0,0,0.6),
+    inset 0 0 6px 6px rgba(0,0,0,0.12),
+    inset 0 0 2px 2px rgba(0,0,0,0.06),
+    0 0 12px rgba(255,255,255,0.15);
+}
+
+.btn-liquid__blur {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  border-radius: 9999px;
+  overflow: hidden;
+  z-index: -1;
+  backdrop-filter: url(#container-glass);
+  -webkit-backdrop-filter: url(#container-glass);
+}
