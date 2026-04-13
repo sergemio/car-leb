@@ -38,7 +38,7 @@ const LINK_GROUPS: LinkGroup[] = [
 
 export function Footer() {
   return (
-    <footer className="border-t border-[var(--gray-2)] mt-auto bg-white">
+    <footer className="border-t border-[var(--gray-2)] mt-auto bg-[var(--gray-1)]">
       <div className="max-w-[1280px] mx-auto px-6 lg:px-8 py-16">
         <div className="grid grid-cols-2 lg:grid-cols-5 gap-12">
           {/* Brand column — 2 cols wide */}
