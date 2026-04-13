@@ -93,8 +93,8 @@ export function FeaturedShowcase({ listings }: FeaturedShowcaseProps) {
           className={`transition-opacity duration-300 ${transitioning ? 'opacity-0' : 'opacity-100'}`}
         >
           <Link href={`/listings/${listing.id}`} className="block">
-            <div className="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-2 lg:gap-2">
-              {/* Hero photo — large */}
+            <div className="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-2 lg:gap-2 lg:max-h-[420px]">
+              {/* Hero photo — large, constrained height on desktop */}
               <div className="relative aspect-[16/9] lg:aspect-auto lg:row-span-2 rounded-xl lg:rounded-l-xl lg:rounded-r-none overflow-hidden bg-[var(--gray-1)] group">
                 {heroPhoto ? (
                   <img
