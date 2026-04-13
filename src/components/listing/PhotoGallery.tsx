@@ -4,11 +4,10 @@ import { useState, useCallback, useEffect } from 'react';
 import { ListingPhoto } from '@/types';
 import { PHOTO_SLOTS } from '@/lib/constants';
 
-// Cars & Bids-style photo gallery for listing detail:
-// - Mosaic layout: hero photo left (~65%) + right column with 2 photos
-//   + "All Photos (N)" cell at bottom-right
-// - Clicking any photo opens fullscreen lightbox with arrows + thumbnails
-// - On mobile: hero only, then horizontal scroll strip
+// Cars & Bids-style photo gallery:
+// Left: large hero photo (~60%, taller aspect ~4:3)
+// Right: 2-column × 4-row grid = 8 cells (7 photos + "All Photos" last cell)
+// Click any photo → fullscreen lightbox
 
 interface PhotoGalleryProps {
   photos: ListingPhoto[];
@@ -19,7 +18,6 @@ export function PhotoGallery({ photos, title }: PhotoGalleryProps) {
   const photosBySlot = new Map(photos.map((p) => [p.slot, p]));
   const frontPhoto = photosBySlot.get('front') || photos[0];
 
-  // Ordered list of all actual photos for lightbox navigation
   const orderedPhotos: ListingPhoto[] = [];
   if (frontPhoto) orderedPhotos.push(frontPhoto);
   for (const slot of PHOTO_SLOTS) {
@@ -28,8 +26,9 @@ export function PhotoGallery({ photos, title }: PhotoGalleryProps) {
     if (p) orderedPhotos.push(p);
   }
 
-  // Side photos: pick the best 3 after front
-  const sidePhotos = orderedPhotos.slice(1, 4);
+  // 7 side photos for the 2×4 grid (last cell = "All Photos")
+  const sidePhotos = orderedPhotos.slice(1, 8);
+  const totalPhotos = orderedPhotos.length;
 
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
   const open = (photo: ListingPhoto) => {
@@ -63,18 +62,17 @@ export function PhotoGallery({ photos, title }: PhotoGalleryProps) {
   }, [lightboxIndex, close, next, prev]);
 
   const active = lightboxIndex !== null ? orderedPhotos[lightboxIndex] : null;
-  const totalPhotos = orderedPhotos.length;
 
   return (
     <>
-      {/* ===== MOSAIC LAYOUT ===== */}
-      <div className="grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-1.5 lg:h-[380px] mb-6">
-        {/* Hero photo — large, left */}
+      {/* ===== MOSAIC: hero left + 2×4 grid right ===== */}
+      <div className="grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-1 lg:h-[480px] mb-6">
+        {/* Hero photo — large, ~4:3 feel */}
         {frontPhoto && (
           <button
             type="button"
             onClick={() => open(frontPhoto)}
-            className="relative lg:h-full aspect-[16/9] lg:aspect-auto rounded-lg lg:rounded-l-lg lg:rounded-r-none overflow-hidden bg-[var(--gray-1)] cursor-zoom-in group"
+            className="relative lg:h-full aspect-[4/3] lg:aspect-auto rounded-lg lg:rounded-l-lg lg:rounded-r-none overflow-hidden bg-[var(--gray-1)] cursor-zoom-in group"
           >
             <img
               src={frontPhoto.url}
@@ -84,18 +82,55 @@ export function PhotoGallery({ photos, title }: PhotoGalleryProps) {
           </button>
         )}
 
-        {/* Right column — 2 photos + "All Photos" */}
-        <div className="hidden lg:flex lg:flex-col gap-1.5 h-full">
-          {[0, 1].map(i => {
+        {/* Right: 2 columns × 4 rows grid */}
+        <div className="hidden lg:grid grid-cols-2 grid-rows-4 gap-1 h-full">
+          {Array.from({ length: 8 }).map((_, i) => {
+            const isLast = i === 7;
             const photo = sidePhotos[i];
+
+            // Corner rounding
+            const rounded = i === 1 ? 'rounded-tr-lg' : i === 7 ? 'rounded-br-lg' : '';
+
+            if (isLast) {
+              // "All Photos" cell
+              return (
+                <button
+                  key={i}
+                  type="button"
+                  onClick={() => { if (orderedPhotos.length > 0) setLightboxIndex(0); }}
+                  className={`overflow-hidden bg-[var(--gray-1)] ${rounded} relative cursor-zoom-in`}
+                >
+                  {photo ? (
+                    <>
+                      <img
+                        src={photo.url}
+                        alt=""
+                        className="w-full h-full object-cover brightness-[0.4]"
+                        loading="lazy"
+                      />
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <span className="font-mono text-[11px] font-medium text-white uppercase tracking-[0.08em]">
+                          All Photos ({totalPhotos})
+                        </span>
+                      </div>
+                    </>
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center">
+                      <span className="font-mono text-[11px] text-[var(--gray-4)]">
+                        All Photos ({totalPhotos})
+                      </span>
+                    </div>
+                  )}
+                </button>
+              );
+            }
+
             return (
               <button
                 key={i}
                 type="button"
                 onClick={() => photo && open(photo)}
-                className={`flex-1 overflow-hidden bg-[var(--gray-1)] cursor-zoom-in group ${
-                  i === 0 ? 'rounded-tr-lg' : ''
-                }`}
+                className={`overflow-hidden bg-[var(--gray-1)] ${rounded} cursor-zoom-in group`}
               >
                 {photo ? (
                   <img
@@ -112,38 +147,10 @@ export function PhotoGallery({ photos, title }: PhotoGalleryProps) {
               </button>
             );
           })}
-          {/* "All Photos" cell */}
-          <button
-            type="button"
-            onClick={() => { if (orderedPhotos.length > 0) setLightboxIndex(0); }}
-            className="flex-1 overflow-hidden bg-[var(--gray-1)] rounded-br-lg relative cursor-zoom-in"
-          >
-            {sidePhotos[2] ? (
-              <>
-                <img
-                  src={sidePhotos[2].url}
-                  alt=""
-                  className="w-full h-full object-cover brightness-[0.4]"
-                  loading="lazy"
-                />
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <span className="font-mono text-[12px] font-medium text-white uppercase tracking-[0.08em]">
-                    All Photos ({totalPhotos})
-                  </span>
-                </div>
-              </>
-            ) : (
-              <div className="w-full h-full flex items-center justify-center">
-                <span className="font-mono text-[11px] text-[var(--gray-4)]">
-                  All Photos ({totalPhotos})
-                </span>
-              </div>
-            )}
-          </button>
         </div>
       </div>
 
-      {/* Mobile: horizontal scroll strip of remaining photos */}
+      {/* Mobile: horizontal scroll strip */}
       {orderedPhotos.length > 1 && (
         <div className="lg:hidden flex gap-2 overflow-x-auto no-scrollbar mb-6 -mx-6 px-6">
           {orderedPhotos.slice(1).map((photo) => (
@@ -167,7 +174,6 @@ export function PhotoGallery({ photos, title }: PhotoGalleryProps) {
           role="dialog"
           aria-modal="true"
         >
-          {/* Top bar */}
           <div
             className="flex items-center justify-between px-6 py-5 text-white"
             onClick={(e) => e.stopPropagation()}
@@ -189,7 +195,6 @@ export function PhotoGallery({ photos, title }: PhotoGalleryProps) {
             </button>
           </div>
 
-          {/* Main image */}
           <div className="flex-1 flex items-center justify-center px-4 sm:px-16">
             <img
               src={active.url}
@@ -199,7 +204,6 @@ export function PhotoGallery({ photos, title }: PhotoGalleryProps) {
             />
           </div>
 
-          {/* Prev / next */}
           {orderedPhotos.length > 1 && (
             <>
               <button
@@ -225,7 +229,6 @@ export function PhotoGallery({ photos, title }: PhotoGalleryProps) {
             </>
           )}
 
-          {/* Thumbnail strip */}
           {orderedPhotos.length > 1 && (
             <div
               className="px-4 sm:px-6 py-4 overflow-x-auto no-scrollbar"
