@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { createServerSupabase } from '@/lib/supabase-server';
 import { ListingGrid } from '@/components/listing/ListingGrid';
 import { Hero } from '@/components/home/Hero';
+import { FeaturedShowcase } from '@/components/home/FeaturedShowcase';
 import { WhyCarLeb } from '@/components/home/WhyCarLeb';
 import { Listing, ListingPhoto } from '@/types';
 
@@ -32,7 +33,7 @@ export default async function Home() {
   const listings: ListingWithPhotos[] = (topListings as ListingWithPhotos[]) || [];
   const totalListings = totalCount ?? listings.length;
 
-  // Top 2 go in the hero, rest go in Recent Listings below
+  // Top 2 go in hero cards, all go to featured showcase, rest to recent grid
   const heroListings = listings.slice(0, 2);
   const recentListings = listings.slice(2);
 
@@ -40,7 +41,12 @@ export default async function Home() {
     <div>
       <Hero featuredListings={heroListings} totalListings={totalListings} />
 
-      {/* Recent listings — below the hero, skipping the ones already featured */}
+      {/* Featured showcase — Cars & Bids style mosaic, auto-rotates */}
+      {listings.length > 0 && (
+        <FeaturedShowcase listings={listings} />
+      )}
+
+      {/* Recent listings — below featured, skipping the ones already shown */}
       {recentListings.length > 0 && (
         <section className="border-b border-[var(--gray-2)]">
           <div className="max-w-[1280px] mx-auto px-6 lg:px-8 py-20 lg:py-24">
