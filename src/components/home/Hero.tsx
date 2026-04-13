@@ -15,7 +15,7 @@ export function Hero({ totalListings }: HeroProps) {
 
   return (
     <section className="border-b border-[var(--gray-2)]">
-      <div className="max-w-[1280px] mx-auto px-6 lg:px-8 pt-10 lg:pt-12 pb-8">
+      <div className="max-w-[1280px] mx-auto px-6 lg:px-8 pt-4 lg:pt-6 pb-6">
         <div className="lg:grid lg:grid-cols-2 lg:gap-10 lg:items-end">
           {/* Left — title only */}
           <div>
