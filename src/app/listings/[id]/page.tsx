@@ -72,7 +72,7 @@ export default async function ListingDetailPage({ params }: Props) {
   return (
     <div>
       {/* ===== TITLE BAR ===== */}
-      <div className="max-w-[1280px] mx-auto px-6 lg:px-8 pt-8 pb-4">
+      <div className="max-w-[1600px] mx-auto px-6 lg:px-10 pt-8 pb-4">
         <div className="flex items-start justify-between gap-4">
           <div>
             <h1 className="font-display text-[32px] sm:text-[40px] font-black leading-[1] text-[var(--ink)]">
@@ -106,12 +106,12 @@ export default async function ListingDetailPage({ params }: Props) {
       </div>
 
       {/* ===== PHOTO MOSAIC ===== */}
-      <div className="max-w-[1280px] mx-auto px-6 lg:px-8 pb-6">
+      <div className="max-w-[1600px] mx-auto px-6 lg:px-10 pb-6">
         <PhotoGallery photos={l.listing_photos} title={`${l.year} ${l.make} ${l.model}`} />
       </div>
 
       {/* ===== MAIN CONTENT: 2 columns ===== */}
-      <div className="max-w-[1280px] mx-auto px-6 lg:px-8 pb-16">
+      <div className="max-w-[1600px] mx-auto px-6 lg:px-10 pb-16">
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-10">
           {/* LEFT — Specs + Description + Completeness */}
           <div className="space-y-8">
