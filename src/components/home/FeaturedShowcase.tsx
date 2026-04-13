@@ -60,7 +60,7 @@ export function FeaturedShowcase({ listings }: FeaturedShowcaseProps) {
   const mosaicPhotos = photos.slice(1, 5); // 4 mosaic photos
 
   return (
-    <section className="border-b border-[var(--gray-2)]">
+    <section>
       <div className="max-w-[1280px] mx-auto px-6 lg:px-8 py-6 lg:py-8">
         {/* Header */}
         <div className="flex items-center justify-between mb-4">
