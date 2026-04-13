@@ -4,13 +4,11 @@ import { useState, useCallback, useEffect } from 'react';
 import { ListingPhoto } from '@/types';
 import { PHOTO_SLOTS } from '@/lib/constants';
 
-// Gallery for the listing detail page.
-// - Hero front photo + grid of other slots
-// - Clicking any filled photo opens a fullscreen lightbox
-// - In the lightbox: arrow keys, clickable prev/next, ESC to close,
-//   click on backdrop to close, thumbnail strip at the bottom
-// Server component (page.tsx) passes the already-joined photos; we only
-// need this to be a client component because of the lightbox state.
+// Cars & Bids-style photo gallery for listing detail:
+// - Mosaic layout: hero photo left (~65%) + right column with 2 photos
+//   + "All Photos (N)" cell at bottom-right
+// - Clicking any photo opens fullscreen lightbox with arrows + thumbnails
+// - On mobile: hero only, then horizontal scroll strip
 
 interface PhotoGalleryProps {
   photos: ListingPhoto[];
@@ -19,10 +17,9 @@ interface PhotoGalleryProps {
 
 export function PhotoGallery({ photos, title }: PhotoGalleryProps) {
   const photosBySlot = new Map(photos.map((p) => [p.slot, p]));
-  const frontPhoto = photosBySlot.get('front');
+  const frontPhoto = photosBySlot.get('front') || photos[0];
 
-  // Ordered list of photos that actually exist, front first.
-  // This is what the lightbox navigates through.
+  // Ordered list of all actual photos for lightbox navigation
   const orderedPhotos: ListingPhoto[] = [];
   if (frontPhoto) orderedPhotos.push(frontPhoto);
   for (const slot of PHOTO_SLOTS) {
@@ -30,6 +27,9 @@ export function PhotoGallery({ photos, title }: PhotoGalleryProps) {
     const p = photosBySlot.get(slot.slot);
     if (p) orderedPhotos.push(p);
   }
+
+  // Side photos: pick the best 3 after front
+  const sidePhotos = orderedPhotos.slice(1, 4);
 
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
   const open = (photo: ListingPhoto) => {
@@ -46,7 +46,6 @@ export function PhotoGallery({ photos, title }: PhotoGalleryProps) {
     );
   }, [orderedPhotos.length]);
 
-  // Keyboard navigation + lock body scroll while open
   useEffect(() => {
     if (lightboxIndex === null) return;
     const onKey = (e: KeyboardEvent) => {
@@ -64,65 +63,103 @@ export function PhotoGallery({ photos, title }: PhotoGalleryProps) {
   }, [lightboxIndex, close, next, prev]);
 
   const active = lightboxIndex !== null ? orderedPhotos[lightboxIndex] : null;
+  const totalPhotos = orderedPhotos.length;
 
   return (
     <>
-      {/* Hero front photo */}
-      {frontPhoto && (
-        <button
-          type="button"
-          onClick={() => open(frontPhoto)}
-          className="group block w-full aspect-[16/9] rounded-2xl overflow-hidden mb-4 border border-[var(--gray-2)] bg-[var(--gray-1)] cursor-zoom-in"
-          aria-label="Open photo gallery"
-        >
-          <img
-            src={frontPhoto.url}
-            alt={title}
-            className="w-full h-full object-contain transition-transform duration-500 group-hover:scale-[1.02]"
-          />
-        </button>
-      )}
+      {/* ===== MOSAIC LAYOUT ===== */}
+      <div className="grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-1.5 lg:h-[380px] mb-6">
+        {/* Hero photo — large, left */}
+        {frontPhoto && (
+          <button
+            type="button"
+            onClick={() => open(frontPhoto)}
+            className="relative lg:h-full aspect-[16/9] lg:aspect-auto rounded-lg lg:rounded-l-lg lg:rounded-r-none overflow-hidden bg-[var(--gray-1)] cursor-zoom-in group"
+          >
+            <img
+              src={frontPhoto.url}
+              alt={title}
+              className="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-500"
+            />
+          </button>
+        )}
 
-      {/* Remaining photo slots grid */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-16">
-        {PHOTO_SLOTS.filter((s) => s.slot !== 'front').map((slot) => {
-          const photo = photosBySlot.get(slot.slot);
-          const common =
-            'aspect-[4/3] rounded-xl overflow-hidden border border-[var(--gray-2)] bg-[var(--gray-1)]';
-          if (photo) {
+        {/* Right column — 2 photos + "All Photos" */}
+        <div className="hidden lg:flex lg:flex-col gap-1.5 h-full">
+          {[0, 1].map(i => {
+            const photo = sidePhotos[i];
             return (
               <button
-                key={slot.slot}
+                key={i}
                 type="button"
-                onClick={() => open(photo)}
-                className={`${common} group cursor-zoom-in`}
-                aria-label={`Open ${slot.label}`}
+                onClick={() => photo && open(photo)}
+                className={`flex-1 overflow-hidden bg-[var(--gray-1)] cursor-zoom-in group ${
+                  i === 0 ? 'rounded-tr-lg' : ''
+                }`}
               >
-                <img
-                  src={photo.url}
-                  alt={slot.label}
-                  className="w-full h-full object-contain transition-transform duration-500 group-hover:scale-[1.03]"
-                  loading="lazy"
-                />
+                {photo ? (
+                  <img
+                    src={photo.url}
+                    alt=""
+                    className="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-500"
+                    loading="lazy"
+                  />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center">
+                    <span className="font-mono text-[10px] text-[var(--gray-3)]">—</span>
+                  </div>
+                )}
               </button>
             );
-          }
-          return (
-            <div key={slot.slot} className={`${common} relative`}>
-              <img
-                src={`/sketches/guides/${slot.slot}.webp`}
-                alt={`${slot.label} reference`}
-                className="absolute inset-0 w-full h-full object-cover"
-              />
-              <span className="absolute bottom-2 left-1/2 -translate-x-1/2 font-mono text-[10px] uppercase tracking-[0.08em] text-[var(--gray-3)] bg-white/80 px-2 py-0.5 rounded-full">
-                {slot.label}
-              </span>
-            </div>
-          );
-        })}
+          })}
+          {/* "All Photos" cell */}
+          <button
+            type="button"
+            onClick={() => { if (orderedPhotos.length > 0) setLightboxIndex(0); }}
+            className="flex-1 overflow-hidden bg-[var(--gray-1)] rounded-br-lg relative cursor-zoom-in"
+          >
+            {sidePhotos[2] ? (
+              <>
+                <img
+                  src={sidePhotos[2].url}
+                  alt=""
+                  className="w-full h-full object-cover brightness-[0.4]"
+                  loading="lazy"
+                />
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <span className="font-mono text-[12px] font-medium text-white uppercase tracking-[0.08em]">
+                    All Photos ({totalPhotos})
+                  </span>
+                </div>
+              </>
+            ) : (
+              <div className="w-full h-full flex items-center justify-center">
+                <span className="font-mono text-[11px] text-[var(--gray-4)]">
+                  All Photos ({totalPhotos})
+                </span>
+              </div>
+            )}
+          </button>
+        </div>
       </div>
 
-      {/* Lightbox */}
+      {/* Mobile: horizontal scroll strip of remaining photos */}
+      {orderedPhotos.length > 1 && (
+        <div className="lg:hidden flex gap-2 overflow-x-auto no-scrollbar mb-6 -mx-6 px-6">
+          {orderedPhotos.slice(1).map((photo) => (
+            <button
+              key={photo.id}
+              type="button"
+              onClick={() => open(photo)}
+              className="flex-shrink-0 w-32 h-24 rounded-lg overflow-hidden bg-[var(--gray-1)] cursor-zoom-in"
+            >
+              <img src={photo.url} alt="" className="w-full h-full object-cover" loading="lazy" />
+            </button>
+          ))}
+        </div>
+      )}
+
+      {/* ===== LIGHTBOX ===== */}
       {active && lightboxIndex !== null && (
         <div
           className="fixed inset-0 z-[100] bg-[var(--ink)]/95 backdrop-blur-sm flex flex-col"
@@ -130,7 +167,7 @@ export function PhotoGallery({ photos, title }: PhotoGalleryProps) {
           role="dialog"
           aria-modal="true"
         >
-          {/* Top bar — counter + close */}
+          {/* Top bar */}
           <div
             className="flex items-center justify-between px-6 py-5 text-white"
             onClick={(e) => e.stopPropagation()}
@@ -152,7 +189,7 @@ export function PhotoGallery({ photos, title }: PhotoGalleryProps) {
             </button>
           </div>
 
-          {/* Main image — clicking the backdrop (not the image) closes */}
+          {/* Main image */}
           <div className="flex-1 flex items-center justify-center px-4 sm:px-16">
             <img
               src={active.url}
@@ -162,7 +199,7 @@ export function PhotoGallery({ photos, title }: PhotoGalleryProps) {
             />
           </div>
 
-          {/* Prev / next buttons — desktop */}
+          {/* Prev / next */}
           {orderedPhotos.length > 1 && (
             <>
               <button
