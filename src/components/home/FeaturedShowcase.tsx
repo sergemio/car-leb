@@ -93,9 +93,9 @@ export function FeaturedShowcase({ listings }: FeaturedShowcaseProps) {
           className={`transition-opacity duration-300 ${transitioning ? 'opacity-0' : 'opacity-100'}`}
         >
           <Link href={`/listings/${listing.id}`} className="block">
-            <div className="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-2 lg:gap-2 lg:max-h-[420px]">
-              {/* Hero photo — large, constrained height on desktop */}
-              <div className="relative aspect-[16/9] lg:aspect-auto lg:row-span-2 rounded-xl lg:rounded-l-xl lg:rounded-r-none overflow-hidden bg-[var(--gray-1)] group">
+            <div className="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-2 lg:gap-2 lg:h-[420px]">
+              {/* Hero photo — fills the full grid height */}
+              <div className="relative aspect-[16/9] lg:aspect-auto lg:h-full rounded-xl lg:rounded-l-xl lg:rounded-r-none overflow-hidden bg-[var(--gray-1)] group">
                 {heroPhoto ? (
                   <img
                     src={heroPhoto.url}
@@ -124,8 +124,8 @@ export function FeaturedShowcase({ listings }: FeaturedShowcaseProps) {
                 </div>
               </div>
 
-              {/* Mosaic — 2x2 grid on the right */}
-              <div className="hidden lg:grid grid-cols-2 grid-rows-2 gap-2">
+              {/* Mosaic — 2x2 grid, same height as hero */}
+              <div className="hidden lg:grid grid-cols-2 grid-rows-2 gap-2 h-full">
                 {[0, 1, 2, 3].map(i => {
                   const photo = mosaicPhotos[i];
                   return (
