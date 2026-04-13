@@ -10,9 +10,11 @@ export const dynamic = 'force-dynamic';
 
 type ListingWithPhotos = Listing & { listing_photos: ListingPhoto[] };
 
-// Homepage — Cars & Bids rhythm: Hero with featured car, then listings
-// IMMEDIATELY so visitors see inventory above the fold. Stats live inside
-// the About section further down. See design-language.md.
+// Homepage layout (per Serge's Photoshop mockup):
+// 1. Hero — compact branding (title left, subtitle+sketch+CTAs right)
+// 2. FeaturedShowcase — Cars & Bids mosaic, auto-rotates
+// 3. Recent Listings — card grid
+// 4. WhyCarLeb — about section
 
 export default async function Home() {
   const supabase = createServerSupabase();
@@ -33,32 +35,23 @@ export default async function Home() {
   const listings: ListingWithPhotos[] = (topListings as ListingWithPhotos[]) || [];
   const totalListings = totalCount ?? listings.length;
 
-  // Top 2 go in hero cards, all go to featured showcase, rest to recent grid
-  const heroListings = listings.slice(0, 2);
-  const recentListings = listings.slice(2);
-
   return (
     <div>
-      <Hero featuredListings={heroListings} totalListings={totalListings} />
+      <Hero totalListings={totalListings} />
 
-      {/* Featured showcase — Cars & Bids style mosaic, auto-rotates */}
+      {/* Featured showcase — Cars & Bids mosaic */}
       {listings.length > 0 && (
         <FeaturedShowcase listings={listings} />
       )}
 
-      {/* Recent listings — below featured, skipping the ones already shown */}
-      {recentListings.length > 0 && (
+      {/* Recent listings grid */}
+      {listings.length > 0 && (
         <section className="border-b border-[var(--gray-2)]">
-          <div className="max-w-[1280px] mx-auto px-6 lg:px-8 py-20 lg:py-24">
-            <div className="flex items-end justify-between mb-10">
-              <div>
-                <div className="font-mono text-[11px] uppercase tracking-[0.14em] text-[var(--gray-4)] mb-3">
-                  — Curated
-                </div>
-                <h2 className="font-display text-[64px] sm:text-[72px] font-black leading-[0.88] text-[var(--ink)]">
-                  Recent <span className="font-light text-[var(--gray-3)]">listings</span>
-                </h2>
-              </div>
+          <div className="max-w-[1280px] mx-auto px-6 lg:px-8 py-12 lg:py-16">
+            <div className="flex items-end justify-between mb-8">
+              <h2 className="font-display text-[48px] sm:text-[56px] font-black leading-[0.88] text-[var(--ink)]">
+                Recent <span className="font-light text-[var(--gray-3)]">listings</span>
+              </h2>
               <Link
                 href="/listings"
                 className="hidden sm:inline-flex items-center gap-2 font-mono text-[12px] font-medium uppercase tracking-[0.1em] text-[var(--ink)] hover:text-[var(--gray-4)] transition-colors"
@@ -66,7 +59,7 @@ export default async function Home() {
                 View all →
               </Link>
             </div>
-            <ListingGrid listings={recentListings} />
+            <ListingGrid listings={listings} />
           </div>
         </section>
       )}
